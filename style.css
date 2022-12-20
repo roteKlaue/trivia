@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nova Mono', monospace;
+}
+
+option {
+    text-transform: capitalize;
+}
+
+.options {
+    position: absolute;
+    width: 80vw;
+    height: 80vh;
+    top: 10vh;
+    left: 10vw;
+    background-color: rgb(105, 105, 105, .5);
+    overflow: hidden;
+}
+
+.options>select {
+    position: relative;
+    left: 5%;
+    top: 14%;
+    width: 90%;
+    height: 10%;
+    font-size: 3vh;
+    text-align: center;
+    text-transform:uppercase;
+}
+
+.options>div.difficulty {
+    position: absolute;
+    bottom: 27%;
+    left: 7%;
+    width: 86%;
+    height: 12%;
+}
+
+.options>div.difficulty>button[group="difficulty"] {
+    background-color: blue;
+    width: 30%;
+    height: 100%;
+    margin-left: 1.5vw;
+    margin-right: 0vw;
+    font-size: 4vh;
+    border: 0;
+    color: white;
+    transition: background linear .15s;
+    text-transform: uppercase;
+}
+
+.options>div.difficulty>button[group="difficulty"]:disabled {
+    background-color: rgb(0, 0, 130);
+}
+
+.options>button.start {
+    height: 12%;
+    position: absolute;
+    bottom: 11%;
+    left: 10%;
+    width: 80%;
+    font-size: 4vh;
+    text-transform: uppercase;
+}
+
+div.options>div.amountOfQuestions {
+    position: absolute;
+    left: 5%;
+    top: 35%;
+    width: 90%;
+    height: 25%;
+}
+
+div.options>div.amountOfQuestions>* {
+    width: 40%;
+    text-align: center;
+    position: absolute;
+    left: 30%;
+    height: 33%;
+    font-size: 3vh;
+    text-transform: uppercase;
+}
+
+div.options>div.amountOfQuestions>span {
+    margin-top: 2vh;
+}
+
+div.options>div.amountOfQuestions>input {
+    margin-top: .8vh;
+}

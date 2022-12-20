@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+
+	<title>Trivia</title>
+</head>
+<body>
+	<!-- finished -->
+	<div class="options" id="pregame">
+		<select name="category" id="category">
+			<option value="arts_and_literature">arts & literature</option>
+			<option value="film_and_tv">film & tv</option>
+			<option value="sport_and_leisure">sport & leisure</option>
+			<option value="food_and_drink">food & drink</option>
+			<option value="general_knowledge" selected>general knowledge</option>
+			<option value="geography">geography</option>
+			<option value="history">history</option>
+			<option value="music">music</option>
+			<option value="science">science</option>
+			<option value="society_and_culture">society & culture</option>
+		</select>
+
+		<div class="amountOfQuestions">
+			<span>Amount of Questions</span>
+			<br>
+			<input type="range" name="range" id="limit" min="1" max="20" step="1" value="5">
+			<br>
+			<span>Current: <span id="sus"></span></span>
+		</div>
+
+
+		<div class="difficulty">
+			<button id="easy" group="difficulty">Easy</button>
+			<button id="medium" group="difficulty">Medium</button>
+			<button id="hard" group="difficulty">Hard</button>
+		</div>
+
+		<button class="start" id="start">Start</button>
+	</div>
+
+	<div class="game">
+		<div class="score"></div>
+	</div>
+
+	<script src="index.js"></script>
+</body>
+</html>
+
+<br>
