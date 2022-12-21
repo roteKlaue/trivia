@@ -76,7 +76,7 @@ document.querySelector("#start").addEventListener("click", request.bind(null, (q
 document.querySelector("#go").addEventListener("click", () => 
 	(state.sus? () => {
 		if(!state.selected) return;
-		const correct = awnsers.find(e => e.innerHTML.toLowerCase() === state.currentQuesions[state.currentIndex].correctAnswer.toLowerCase());
+		const correct = awnsers.find(e => e.innerHTML.toLowerCase() == state.currentQuesions[state.currentIndex].correctAnswer.toLowerCase());
 		correct.setAttribute("state", "correct");
 		document.querySelectorAll(".square")[state.currentIndex].classList.add(correct.id !== state.selected? "red": "green");
 		state.correct++;
