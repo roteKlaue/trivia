@@ -4,6 +4,10 @@
     font-family: 'Nova Mono', monospace;
 }
 
+body {
+    overflow: hidden;
+}
+
 option {
     text-transform: capitalize;
 }
@@ -16,6 +20,7 @@ option {
     left: 10vw;
     background-color: rgb(105, 105, 105, .5);
     overflow: hidden;
+    border-radius: .75vw;
 }
 
 .options>select {
@@ -26,7 +31,8 @@ option {
     height: 10%;
     font-size: 3vh;
     text-align: center;
-    text-transform:uppercase;
+    border-radius: .75vw;
+    text-transform: uppercase;
 }
 
 .options>div.difficulty {
@@ -48,6 +54,11 @@ option {
     color: white;
     transition: background linear .15s;
     text-transform: uppercase;
+    border-radius: .75vw;
+}
+
+.options>div.difficulty>button[group="difficulty"]:hover {
+    background-color: rgb(0, 0, 200);
 }
 
 .options>div.difficulty>button[group="difficulty"]:disabled {
@@ -79,6 +90,7 @@ div.options>div.amountOfQuestions>* {
     left: 30%;
     height: 33%;
     font-size: 3vh;
+    border-radius: .75vw;
     text-transform: uppercase;
 }
 
@@ -88,4 +100,23 @@ div.options>div.amountOfQuestions>span {
 
 div.options>div.amountOfQuestions>input {
     margin-top: .8vh;
+}
+
+div.options>button.start {
+    border-radius: .75vw;
+    transition: background-color .25s linear;
+    border: 0;
+}
+
+div.options>button.start:hover {
+    background-color: rgb(214, 214, 214);
+}
+
+.credits {
+    position: absolute;
+    height: 8vh;
+    bottom: -2vh;
+    font-size: 2vh;
+    right: .5vw;
+    text-transform: uppercase;
 }

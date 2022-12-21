@@ -14,7 +14,7 @@ const request = (callback) => {
 	const limit = document.querySelector("#limit").value;
 	const category = document.querySelector("#category").value;
 	const requestBody = `https://the-trivia-api.com/api/questions?limit=${limit}&difficulty=${difficulty}&categories=${category}`
-	axios.get(requestBody).then(async (response) => response.data).then(callback);
+	axios.get(requestBody).then(async response => response.data).then(callback);
 }
 
 document.querySelector("#limit").addEventListener("input", (e) => {
