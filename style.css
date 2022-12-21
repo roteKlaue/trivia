@@ -120,3 +120,7 @@ div.options>button.start:hover {
     right: .5vw;
     text-transform: uppercase;
 }
+
+.game {
+    display: none;
+}
