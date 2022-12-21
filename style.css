@@ -108,10 +108,6 @@ div.options>button.start {
     border: 0;
 }
 
-div.options>button.start:hover {
-    background-color: rgb(214, 214, 214);
-}
-
 .credits {
     position: absolute;
     height: 8vh;
@@ -123,4 +119,158 @@ div.options>button.start:hover {
 
 .game {
     display: none;
+    position: absolute;
+    width: 80vw;
+    height: 80vh;
+    top: 10vh;
+    left: 10vw;
+    background-color: rgb(105, 105, 105, .5);
+    border-radius: .75vw;
+    overflow: hidden;
+}
+
+.game>.score {
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    position: absolute;
+    bottom: 3vh;
+    justify-content: space-evenly;
+}
+
+.square {
+    display: inline-block;
+    height: 7.5vh;
+    width: 7.5vh;
+    border-radius: .75vw;
+}
+
+.gray {
+    background-color: gray;
+}
+
+
+.green {
+    background-color: rgb(46, 255, 46);
+}
+
+.red {
+    background-color: red;
+}
+
+.spacer {
+    width: 90%;
+    height: 15%;
+    background-color: white;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    border-radius: .75vh;
+    left: 5%;
+    top: 5%;
+    padding: 1vh;
+}
+
+.spacer>span {
+    font-size: 3vh;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.game>.grid>.anwsers {
+    width: 90%;
+    position: absolute;
+    height: 40%;
+    top: 25%;
+    left: 5%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.game>.grid>.anwsers>.anwser {
+    width: 45%;
+    height: 45%;
+    border-radius: .75vw;
+    border: 0;
+    transition: .25s linear background, color .25s linear;
+    text-transform: uppercase;
+    font-size: 2vh;
+}
+
+.game>.grid>.anwsers>.anwser[state="correct"],.game>.grid>.anwsers>.anwser[state="correct"]:disabled {
+    background-color: rgb(46, 255, 46);
+}
+
+.game>.grid>.anwsers>.anwser[state="correct"]:hover {
+    background-color: rgb(38, 220, 38);
+}
+
+.game>.grid>.anwsers>.anwser[state="wrong"],.game>.grid>.anwsers>.anwser[state="wrong"]:disabled {
+    background-color: red;
+}
+
+.game>.grid>.anwsers>.anwser[state="wrong"]:hover {
+    background-color: rgb(206, 0, 0);
+}
+
+.game>.grid>.anwsers>.anwser:disabled {
+    background-color: rgb(0, 0, 130);
+    color: white;
+}
+
+.game>.submit {
+    position: absolute;
+    width: 70%;
+    left:15%;
+    top: 68%;
+    height: 10%;
+    border-radius: .75vw;
+    border: 0;
+    transition: .5s linear background;
+    text-transform: uppercase;
+    font-size: 2vh;
+}
+
+.game>.submit:hover, .end > .back:hover, .game>.grid>.anwsers>.anwser:hover, div.options>button.start:hover {
+    background-color: rgb(214, 214, 214);
+}
+
+.end {
+    display: none;
+    position: absolute;
+    width: 80vw;
+    height: 80vh;
+    top: 10vh;
+    left: 10vw;
+    background-color: rgb(105, 105, 105, .5);
+    border-radius: .75vw;
+    overflow: hidden;
+}
+
+.end > .res, .end > .header, .end > .back {
+    text-transform: uppercase;
+    position: absolute;
+    text-align: center;
+    width: 30%;
+    left: 35%;
+}
+
+.end > .header {
+    font-size: 8vh;
+    top: 18%;
+}
+
+.end > .res {
+    top: 30%;
+    font-size: 4vh;
+}
+
+.end > .back {
+    top: 50%;
+    font-size: 3vh;
+    border: 0;
+    border-radius: .75vh;
+    transition: background .25s;
 }

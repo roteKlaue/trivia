@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bf/Blue_question_mark_%28italic%29.svg">
+	<link rel="shortcut icon"
+		href="https://upload.wikimedia.org/wikipedia/commons/b/bf/Blue_question_mark_%28italic%29.svg">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<link rel="stylesheet" href="style.css">
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 	<title>Trivia</title>
 </head>
+
 <body>
 	<!-- finished -->
 	<div class="options" id="pregame">
@@ -48,21 +51,31 @@
 		<button class="start" id="start">Start</button>
 	</div>
 
-	<div class="game">
+	<div class="game" id="game">
 		<div class="grid">
-			<span class="question">Default value</span>
+			<div class="spacer">
+				<span class="question" id="question">Default value</span>
+			</div>
 			<div class="anwsers">
-				<button class="anwser">Default value</button>
-				<button class="anwser">Default value</button>
-				<button class="anwser">Default value</button>
-				<button class="anwser">Default value</button>
+				<button class="anwser" id="a1">Default value</button>
+				<button class="anwser" id="a2">Default value</button>
+				<button class="anwser" id="a3">Default value</button>
+				<button class="anwser" id="a4">Default value</button>
 			</div>
 		</div>
-		<div class="score"></div>
+		<button class="submit" id="go">submit</button>
+		<div class="score" id="score"></div>
+	</div>
+
+	<div class="end">
+		<div class="header">Result</div>
+		<div class="res"><span id="solved"></span> / <span id="total"></span></div>
+		<button class="back">play again?</button>
 	</div>
 
 	<span class="credits">Powered by <a href="https://www.the-trivia-api.com">the trivia api</a></span>
 
 	<script src="index.js"></script>
 </body>
+
 </html>
