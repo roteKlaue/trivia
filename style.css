@@ -199,7 +199,8 @@ div.options>button.start {
     font-size: 2vh;
 }
 
-.game>.grid>.anwsers>.anwser[state="correct"],.game>.grid>.anwsers>.anwser[state="correct"]:disabled {
+.game>.grid>.anwsers>.anwser[state="correct"],
+.game>.grid>.anwsers>.anwser[state="correct"]:disabled {
     background-color: rgb(46, 255, 46);
 }
 
@@ -207,7 +208,8 @@ div.options>button.start {
     background-color: rgb(38, 220, 38);
 }
 
-.game>.grid>.anwsers>.anwser[state="wrong"],.game>.grid>.anwsers>.anwser[state="wrong"]:disabled {
+.game>.grid>.anwsers>.anwser[state="wrong"],
+.game>.grid>.anwsers>.anwser[state="wrong"]:disabled {
     background-color: red;
 }
 
@@ -223,7 +225,7 @@ div.options>button.start {
 .game>.submit {
     position: absolute;
     width: 70%;
-    left:15%;
+    left: 15%;
     top: 68%;
     height: 10%;
     border-radius: .75vw;
@@ -233,7 +235,10 @@ div.options>button.start {
     font-size: 2vh;
 }
 
-.game>.submit:hover, .end > .back:hover, .game>.grid>.anwsers>.anwser:hover, div.options>button.start:hover {
+.game>.submit:hover,
+.end>.back:hover,
+.game>.grid>.anwsers>.anwser:hover,
+div.options>button.start:hover {
     background-color: rgb(214, 214, 214);
 }
 
@@ -249,7 +254,9 @@ div.options>button.start {
     overflow: hidden;
 }
 
-.end > .res, .end > .header, .end > .back {
+.end>.res,
+.end>.header,
+.end>.back {
     text-transform: uppercase;
     position: absolute;
     text-align: center;
@@ -257,17 +264,17 @@ div.options>button.start {
     left: 35%;
 }
 
-.end > .header {
+.end>.header {
     font-size: 8vh;
     top: 18%;
 }
 
-.end > .res {
+.end>.res {
     top: 30%;
     font-size: 4vh;
 }
 
-.end > .back {
+.end>.back {
     top: 50%;
     font-size: 3vh;
     border: 0;
