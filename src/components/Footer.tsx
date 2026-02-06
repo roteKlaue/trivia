@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import FooterLink from "./FooterLink.tsx";
 import { type FC } from "react";
 
 const Footer: FC = () => {
@@ -28,7 +27,6 @@ const Footer: FC = () => {
                 gap={2}
                 flex={1}
                 justifyContent={"right"}>
-                <FooterLink text={"Impressum"} to={"/impressum"} />
             </Box>
         </Box>
     );

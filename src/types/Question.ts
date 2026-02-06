@@ -7,7 +7,7 @@ export type Question = {
     readonly tags: string[];
     readonly difficulty: Difficulty;
     readonly isNiche: boolean;
-    readonly question: { text: string };
+    readonly question: string;
     readonly correctAnswer: string;
     readonly incorrectAnswers: [string, string, string];
 };

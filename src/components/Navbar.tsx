@@ -1,5 +1,5 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import NavbarDrawer from "./NavbarDrawer.tsx";
 import ModeSwitch from "./ModeSwitch.tsx";
@@ -21,12 +21,14 @@ const Navbar = () => {
         <Box flex={0}>
             <AppBar position="static" color={'default'}>
                 <Toolbar>
-                    <Typography onClick={() => navigator("/")}
+                    <QuestionMarkRoundedIcon />
+                    <Typography onClick={() => navigator("/trivia")}
                         variant="h6"
                         sx={{
-                            flexGrow: 1,
+                            marginLeft: 1,
                             cursor: "pointer"
                         }}>Trivia</Typography>
+                    <Box sx={{ flexGrow: 1, height: "100%" }} />
                     <ModeSwitch />
                 </Toolbar>
             </AppBar>
