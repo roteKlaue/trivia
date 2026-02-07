@@ -1,3 +1,6 @@
+import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
+import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -10,7 +13,9 @@ import ResultsBar from "./ResultsBar";
 const Game = () => {
     const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
+    const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
+
     useDocumentTitle(`Trivia - ${questions.length} Questions`);
 
     const findIndex = (question: Question | null) => {
@@ -44,7 +49,8 @@ const Game = () => {
             return;
         }
 
-        guess(questions[round].state.cachedAnswers[(questions[round].state.selected)]);
+        const success = guess(questions[round].state.cachedAnswers[(questions[round].state.selected)]);
+        playSfx(success ? successSfx : errorSfx);
     };
 
     const currentIndex = findIndex(question);

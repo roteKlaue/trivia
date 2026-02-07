@@ -5,7 +5,7 @@ import { type FC, useState } from "react";
 const FooterLink: FC<{ text: string, to: string }> = ({ to, text }) => {
     const [hover, setHover] = useState(false);
 
-        return (<Button color={"inherit"}>
+    return (<Button color={"inherit"}>
         <MuiLink
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
@@ -42,8 +42,7 @@ const FooterLink: FC<{ text: string, to: string }> = ({ to, text }) => {
                 />
             </RouterLink>
         </MuiLink>
-    </Button>
-    );
+    </Button>);
 }
 
 export default FooterLink;

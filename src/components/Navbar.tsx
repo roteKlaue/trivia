@@ -1,8 +1,10 @@
 import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import SoundControll from './SoundControll.tsx';
 import { useNavigate } from "react-router-dom";
 import NavbarDrawer from "./NavbarDrawer.tsx";
 import ModeSwitch from "./ModeSwitch.tsx";
+import TempButton from './TempButton.tsx';
 import { useState } from "react";
 
 const Navbar = () => {
@@ -29,6 +31,8 @@ const Navbar = () => {
                             cursor: "pointer"
                         }}>Trivia</Typography>
                     <Box sx={{ flexGrow: 1, height: "100%" }} />
+                    <SoundControll />
+                    <TempButton />
                     <ModeSwitch />
                 </Toolbar>
             </AppBar>
