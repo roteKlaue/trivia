@@ -1,15 +1,66 @@
 import { useGameStateStore } from "../stores/GameStateStore";
 import QuestionSelectButton from "./QuestionSelectButton";
-import { ToggleButtonGroup } from "@mui/material";
+import {
+    ToggleButtonGroup,
+    Select,
+    MenuItem,
+    useMediaQuery,
+    useTheme,
+    Box
+} from "@mui/material";
 import type { Question } from "../types/Question";
 import type { FC } from "react";
 
 type Props = {
+    question: Question;
     setQuestion: (question: Question) => void;
-}
+};
 
-const ResultsBar: FC<Props> = ({ setQuestion }) => {
+const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
     const { questions, round } = useGameStateStore();
+
+    const findIndex = (question: Question | null) => {
+        const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
+        return index;
+    }
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const handleChange = (index: number) => {
+        if (index === undefined || index === null) return;
+        setQuestion(questions[index].question);
+    };
+
+    if (isMobile) {
+        return (
+            <Box px={1}>
+                <Select
+                    fullWidth
+                    value={findIndex(question)}
+                    onChange={(e) => handleChange(Number(e.target.value))}
+                >
+                    {questions.map((q, index) => {
+                        const isCurrent = !(index > round);
+
+                        const symbol =
+                            (!isCurrent) ? "•"
+                                : !q.state.answered
+                                    ? "▶"
+                                    : q.state.correct === true
+                                        ? "✓"
+                                        : "✗";
+
+                        return (
+                            <MenuItem key={index} value={index} disabled={index > round}>
+                                {symbol} Q{index + 1}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            </Box>
+        );
+    }
 
     return (<ToggleButtonGroup
         exclusive
@@ -29,6 +80,6 @@ const ResultsBar: FC<Props> = ({ setQuestion }) => {
             correct={questions[index].state.correct}
             round={round} />))}
     </ToggleButtonGroup>);
-}
+};
 
 export default ResultsBar;

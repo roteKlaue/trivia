@@ -23,7 +23,12 @@ const AnswerButton = ({ text, index, selected, answered, correct, onSelect }: An
 
     return (
         <Button
-            sx={{ height: "95%", width: "45%", fontSize: 30 }}
+            sx={{
+                height: "100%",
+                fontSize: "clamp(0.9rem, 2.5vw, 1.8rem)",
+                px: 2,
+                textWrap: "balance"
+            }}
             variant={isSelected ? "contained" : "outlined"}
             color={color}
             onClick={() => onSelect(index)}

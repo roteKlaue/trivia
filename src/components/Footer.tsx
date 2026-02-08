@@ -4,31 +4,40 @@ import FooterLink from "./FooterLink";
 
 const Footer: FC = () => {
     return (
-        <Box component="footer"
-            flexGrow={0}
+        <Box
+            component="footer"
             sx={{
                 display: 'flex',
-                justifyContent: 'space-between',
+                flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center',
-                padding: '16px',
-                flex: 0
-            }}>
-            <Box display="flex"
+                justifyContent: 'space-between',
+                gap: { xs: 0, sm: 2 },
+                padding: { xs: 0, sm: 2 },
+                backgroundColor: 'background.paper',
+            }}
+        >
+            <Box
+                display="flex"
                 gap={2}
-                flex={1}>
-            </Box>
+                flexWrap="wrap"
+                justifyContent={{ xs: 'center', sm: 'flex-start' }}
+            ></Box>
 
-            <Typography variant="body2"
-                align="center"
-                flex={1}>
-                © roteKlaue 2022-{new Date(Date.now()).getFullYear()}. All rights reserved.
+            <Typography
+                variant="body2"
+                textAlign="center"
+                sx={{ flexShrink: 0 }}
+            >
+                © roteKlaue 2022-{new Date().getFullYear()}. All rights reserved.
             </Typography>
 
-            <Box display="flex"
+            <Box
+                display="flex"
                 gap={2}
-                flex={1}
-                justifyContent={"right"}>
-                    <FooterLink text={"Credits"} to={"/trivia/credits"} />
+                justifyContent={{ xs: 'center', sm: 'flex-end' }}
+                flexWrap="wrap"
+            >
+                <FooterLink text="Credits" to="/trivia/credits" />
             </Box>
         </Box>
     );
