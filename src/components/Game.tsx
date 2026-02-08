@@ -1,3 +1,6 @@
+import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
+import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -10,7 +13,9 @@ import ResultsBar from "./ResultsBar";
 const Game = () => {
     const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
+    const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
+
     useDocumentTitle(`Trivia - ${questions.length} Questions`);
 
     const findIndex = (question: Question | null) => {
@@ -44,7 +49,8 @@ const Game = () => {
             return;
         }
 
-        guess(questions[round].state.cachedAnswers[(questions[round].state.selected)]);
+        const success = guess(questions[round].state.cachedAnswers[(questions[round].state.selected)]);
+        playSfx(success ? successSfx : errorSfx);
     };
 
     const currentIndex = findIndex(question);
@@ -76,41 +82,50 @@ const Game = () => {
                 <Box sx={{
                     display: "flex",
                     flexDirection: "column",
-                    width: "1500px",
-                    height: "600px"
+                    width: "100%",
+                    minHeight: 420,
+                    maxWidth: 1100,
+                    borderRadius: 3,
+                    p: { xs: 2, sm: 3, md: 4 },
+                    aspectRatio: { md: "16 / 9" },
                 }}>
-                    <Typography variant="h4" textAlign={"center"} sx={{
-                        width: "100%",
-                        marginTop: 3,
-                        marginBottom: 3
-                    }}>{question?.question}</Typography>
-                    <Box sx={{
-                        flexGrow: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                    }}>
-                        {Array.from({ length: 2 }).map((_, row) => (
-                            <Box key={row} sx={{ display: "flex", gap: 2, width: "100%", justifyContent: "center", flexGrow: 1 }}>
-                                {questions[findIndex(question)].state.cachedAnswers.slice(row * 2, row * 2 + 2).map((ans, i) => {
-                                    const index = row * 2 + i;
-                                    return (
-                                        <AnswerButton
-                                            key={index}
-                                            text={ans}
-                                            index={index}
-                                            selected={questions[findIndex(question)].state.selected}
-                                            answered={questions[findIndex(question)].state.answered}
-                                            correct={
-                                                questions[findIndex(question)].state.answered &&
-                                                questions[findIndex(question)].state.cachedAnswers[index] === questions[findIndex(question)].question.correctAnswer
-                                            }
-                                            onSelect={handleSelectAnswer}
-                                        />
-                                    );
-                                })}
-                            </Box>
+                    <Typography
+                        sx={{
+                            fontSize: {
+                                xs: "1.6rem",
+                                sm: "1.8rem",
+                                md: "2rem"
+                            }
+                        }}
+                        textAlign="center"
+                    >
+                        {question?.question}</Typography>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: "grid",
+                            gridTemplateColumns: {
+                                xs: "1fr",
+                                sm: "1fr 1fr"
+                            },
+                            gap: 2,
+                            alignItems: "stretch"
+                        }}
+                    >
+                        {questions[findIndex(question)].state.cachedAnswers.map((ans, index) => (
+                            <AnswerButton
+                                key={index}
+                                text={ans}
+                                index={index}
+                                selected={questions[findIndex(question)].state.selected}
+                                answered={questions[findIndex(question)].state.answered}
+                                correct={
+                                    questions[findIndex(question)].state.answered &&
+                                    questions[findIndex(question)].state.cachedAnswers[index] ===
+                                    questions[findIndex(question)].question.correctAnswer
+                                }
+                                onSelect={handleSelectAnswer}
+                            />
                         ))}
                     </Box>
                     <Box sx={{
@@ -120,7 +135,10 @@ const Game = () => {
                         marginTop: 3,
                         marginBottom: 3
                     }}>
-                        <Button variant="contained"
+                        <Button
+                            fullWidth
+                            sx={{ maxWidth: 300 }}
+                            variant="contained"
                             onClick={handleSubmit}
                             disabled={questions[findIndex(question)].state.selected === -1}
                         >{submitLabel}</Button>
@@ -128,7 +146,7 @@ const Game = () => {
                 </Box>
             </Paper>
         </Box>
-        <ResultsBar setQuestion={setQuestion} />
+        <ResultsBar setQuestion={setQuestion} question={question!} />
     </Box>);
 };
 
