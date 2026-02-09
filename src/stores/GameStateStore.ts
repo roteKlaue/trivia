@@ -1,6 +1,6 @@
-import { create } from "zustand";
 import type { Question } from "../types/Question";
 import { shuffle } from "../functions/shuffle";
+import { create } from "zustand";
 
 type QuestionState = {
     answered: boolean;
@@ -18,11 +18,13 @@ export type GameState = {
     round: number;
     score: number;
     rounds: number;
+    useTimer: boolean;
+    showAnwsers: boolean;
 
     questions: QuestionUnion[];
     currentQuestion: Question | null;
 
-    startGame(questions: Question[]): void;
+    startGame(questions: Question[], useTimer: boolean, showAnwsers: boolean): void;
     nextQuestion(): void;
     guess(input: string): boolean;
     markAnwser(index: number, anwser: number): void;
@@ -31,13 +33,15 @@ export type GameState = {
 export const useGameStateStore = create<GameState>((set, get) => ({
     round: 0,
     score: 0,
-    rounds: 0,
-
+    rounds: 10,
+    useTimer: false,
+    showAnwsers: true,
     questions: [],
+
     currentQuestion: null,
     questionsStates: [],
 
-    startGame(questions) {
+    startGame(questions, useTimer, showAnwsers) {
         const mappedQuestions: QuestionUnion[] = questions.map(question => ({
             question,
             state: {
@@ -54,6 +58,8 @@ export const useGameStateStore = create<GameState>((set, get) => ({
             rounds: questions.length,
             score: 0,
             currentQuestion: questions[0],
+            showAnwsers,
+            useTimer,
         });
     },
 

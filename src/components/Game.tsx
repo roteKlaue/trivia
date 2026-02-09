@@ -11,7 +11,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -37,6 +37,7 @@ const Game = () => {
     }, [currentQuestion]);
 
     const handleSubmit = () => {
+        console.log("called submit");
         if (findIndex(question) !== round) {
             setQuestion(currentQuestion);
             return;
@@ -54,14 +55,18 @@ const Game = () => {
     };
 
     useEffect(() => {
-        window.addEventListener("keypress", e => {
+        const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Enter") handleSubmit();
+
             const parsed = +e.key;
-            if (isNaN(parsed)) return;
-            if (questions[findIndex(question)].state.answered) return;
-            if (parsed > 0 && parsed < 5) markAnwser(findIndex(question), parsed - 1);
-        });
-    }, []);
+            if (!Number.isNaN(parsed) && parsed > 0 && parsed < 5) {
+                handleSelectAnswer(parsed - 1);
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [handleSubmit, handleSelectAnswer]);
 
     const currentIndex = findIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
@@ -127,13 +132,7 @@ const Game = () => {
                                 key={index}
                                 text={ans}
                                 index={index}
-                                selected={questions[findIndex(question)].state.selected}
-                                answered={questions[findIndex(question)].state.answered}
-                                correct={
-                                    questions[findIndex(question)].state.answered &&
-                                    questions[findIndex(question)].state.cachedAnswers[index] ===
-                                    questions[findIndex(question)].question.correctAnswer
-                                }
+                                question={question!}
                                 onSelect={handleSelectAnswer}
                             />
                         ))}

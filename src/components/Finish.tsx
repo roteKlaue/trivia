@@ -1,14 +1,14 @@
 import { Box, Button, Paper, Typography, Stack, LinearProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useGameStateStore } from "../stores/GameStateStore";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useNavigate } from "react-router-dom";
 
 const Finish = () => {
     const navigate = useNavigate();
     const { rounds, score } = useGameStateStore();
 
-    if (!rounds) return null; // guard against divide-by-zero
-
-    const percent = Math.round((score / rounds) * 100);
+    const percent = Math.round((score / Math.max(rounds, 1)) * 100);
+    useDocumentTitle(`Trivia – ${percent}% (${score}/${rounds})`);
 
     const message =
         percent === 100 ? "Perfect run!" :

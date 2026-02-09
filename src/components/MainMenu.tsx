@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "./LoadingOverlay";
 import Tooltip from "@mui/material/Tooltip";
 import { useState } from "react";
+import { useSnackbar } from "notistack";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -57,12 +58,15 @@ const categories: Category[] = [
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
-    const [category, setCategory] = useState<Category>("general_knowledge");
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
-    const [toggles, setToggles] = useState(() => ['showAnwsers']);
-    const [amount, setAmount] = useState<number>(10);
+    const { startGame, showAnwsers, useTimer, rounds } = useGameStateStore();
+    const [category, setCategory] = useState<Category>("general_knowledge");
+    const [toggles, setToggles] = useState<string[]>(() =>
+        [showAnwsers && "showAnswers", useTimer && "timed"].filter(Boolean) as string[]
+    );
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [amount, setAmount] = useState<number>(rounds);
     const [loading, setLoading] = useState(false);
-    const { startGame } = useGameStateStore();
     const navigate = useNavigate();
     useDocumentTitle("Trivia");
 
@@ -74,10 +78,24 @@ const MainMenu = () => {
     };
 
     const handleSubmit = async () => {
+        if (loading) return;
+
         setLoading(true);
-        const questions = await fetchQuestions(difficulty, category, amount);
-        startGame(questions);
-        navigate("/trivia/game");
+
+        try {
+            closeSnackbar();
+            const questions = await fetchQuestions(difficulty, category, amount);
+            startGame(
+                questions,
+                toggles.includes("timed"),
+                toggles.includes("showAnswers")
+            );
+            navigate("/trivia/game");
+        } catch {
+            enqueueSnackbar("Error retrieving questions!", { variant: 'error' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (<>
@@ -158,7 +176,7 @@ const MainMenu = () => {
                             aria-label="toggles"
                         >
                             <Tooltip title="Show correct answers after each question" arrow>
-                                <ToggleButton value="showAnwsers" aria-label="show answers">
+                                <ToggleButton value="showAnswers" aria-label="show answers">
                                     <VisibilityIcon />
                                 </ToggleButton>
                             </Tooltip>

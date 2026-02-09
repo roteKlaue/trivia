@@ -1,15 +1,28 @@
 import { Button } from "@mui/material";
+import { useGameStateStore } from "../stores/GameStateStore";
+import type { FC } from "react";
+import type { Question } from "../types/Question";
 
 type AnswerButtonProps = {
     text: string;
     index: number;
-    selected: number;
-    answered: boolean;
-    correct: boolean;
+    question: Question;
     onSelect: (index: number) => void;
 }
 
-const AnswerButton = ({ text, index, selected, answered, correct, onSelect }: AnswerButtonProps) => {
+const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }) => {
+    const { questions, showAnwsers } = useGameStateStore();
+
+    const findIndex = (question: Question | null) => {
+        const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
+        return index;
+    }
+
+    const selected = questions[findIndex(question)].state.selected
+    const answered = questions[findIndex(question)].state.answered
+    const correct = questions[findIndex(question)].state.answered &&
+        questions[findIndex(question)].state.cachedAnswers[index] ===
+        questions[findIndex(question)].question.correctAnswer;
     const isSelected = selected === index;
 
     let color: "primary" | "success" | "error" = "primary";
@@ -21,6 +34,10 @@ const AnswerButton = ({ text, index, selected, answered, correct, onSelect }: An
         }
     }
 
+    if (correct && showAnwsers) {
+        color = "success";
+    }
+
     return (
         <Button
             sx={{
@@ -29,7 +46,7 @@ const AnswerButton = ({ text, index, selected, answered, correct, onSelect }: An
                 px: 2,
                 textWrap: "balance"
             }}
-            variant={isSelected ? "contained" : "outlined"}
+            variant={(isSelected || correct && showAnwsers) ? "contained" : "outlined"}
             color={color}
             onClick={() => onSelect(index)}
         >
