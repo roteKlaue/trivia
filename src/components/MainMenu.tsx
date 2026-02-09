@@ -14,6 +14,7 @@ import {
     toggleButtonGroupClasses
 } from "@mui/material";
 import BrowseGalleryRoundedIcon from '@mui/icons-material/BrowseGalleryRounded';
+import Timer10SelectRoundedIcon from '@mui/icons-material/Timer10SelectRounded';
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { fetchQuestions } from "../functions/loadQuestions";
@@ -23,8 +24,8 @@ import type { Category } from "../types/Category";
 import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "./LoadingOverlay";
 import Tooltip from "@mui/material/Tooltip";
-import { useState } from "react";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -58,11 +59,11 @@ const categories: Category[] = [
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
+    const { startGame, showAnwsers, useTimer, rounds, shortTimer } = useGameStateStore();
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
-    const { startGame, showAnwsers, useTimer, rounds } = useGameStateStore();
     const [category, setCategory] = useState<Category>("general_knowledge");
     const [toggles, setToggles] = useState<string[]>(() =>
-        [showAnwsers && "showAnswers", useTimer && "timed"].filter(Boolean) as string[]
+        [showAnwsers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
     );
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [amount, setAmount] = useState<number>(rounds);
@@ -74,6 +75,9 @@ const MainMenu = () => {
         _event: React.MouseEvent<HTMLElement>,
         newFormats: string[],
     ) => {
+        if (newFormats.includes("short") && !newFormats.includes("timed")) {
+            newFormats = newFormats.filter(format => format !== "short");
+        }
         setToggles(newFormats);
     };
 
@@ -87,8 +91,9 @@ const MainMenu = () => {
             const questions = await fetchQuestions(difficulty, category, amount);
             startGame(
                 questions,
+                toggles.includes("showAnswers"),
                 toggles.includes("timed"),
-                toggles.includes("showAnswers")
+                toggles.includes("short"),
             );
             navigate("/trivia/game");
         } catch {
@@ -184,6 +189,12 @@ const MainMenu = () => {
                             <Tooltip title="Timed mode" arrow>
                                 <ToggleButton value="timed" aria-label="timed">
                                     <BrowseGalleryRoundedIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="Short Timer" arrow>
+                                <ToggleButton value="short" aria-label="short" disabled={!toggles.includes("timed")}>
+                                    <Timer10SelectRoundedIcon />
                                 </ToggleButton>
                             </Tooltip>
                         </StyledToggleButtonGroup>
