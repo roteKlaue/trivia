@@ -53,7 +53,7 @@ const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
 
                         return (
                             <MenuItem key={index} value={index} disabled={index > round}>
-                                {symbol} Q{index + 1}
+                                {symbol} Q{`${index + 1}`.padStart(2, "0")}
                             </MenuItem>
                         );
                     })}

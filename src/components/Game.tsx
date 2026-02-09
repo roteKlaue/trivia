@@ -11,7 +11,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -42,16 +42,30 @@ const Game = () => {
             return;
         }
 
-        if (questions[round].state.selected === -1) return;
-
         if (questions[round].state.answered) {
             nextQuestion();
             return;
         }
 
+        if (questions[round].state.selected === -1) return;
+
         const success = guess(questions[round].state.cachedAnswers[(questions[round].state.selected)]);
         playSfx(success ? successSfx : errorSfx);
     };
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Enter") handleSubmit();
+
+            const parsed = +e.key;
+            if (!Number.isNaN(parsed) && parsed > 0 && parsed < 5) {
+                handleSelectAnswer(parsed - 1);
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [handleSubmit, handleSelectAnswer]);
 
     const currentIndex = findIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
@@ -71,6 +85,7 @@ const Game = () => {
         }}>
             <Typography>Round: {round + 1} of {rounds}</Typography>
             <Box sx={{ flexGrow: 1 }} />
+            {useTimer && <Typography>Time left: {timerRemaining}s</Typography>}
         </Box>
         <Box sx={{
             flexGrow: 1,
@@ -117,13 +132,7 @@ const Game = () => {
                                 key={index}
                                 text={ans}
                                 index={index}
-                                selected={questions[findIndex(question)].state.selected}
-                                answered={questions[findIndex(question)].state.answered}
-                                correct={
-                                    questions[findIndex(question)].state.answered &&
-                                    questions[findIndex(question)].state.cachedAnswers[index] ===
-                                    questions[findIndex(question)].question.correctAnswer
-                                }
+                                question={question!}
                                 onSelect={handleSelectAnswer}
                             />
                         ))}
@@ -140,7 +149,7 @@ const Game = () => {
                             sx={{ maxWidth: 300 }}
                             variant="contained"
                             onClick={handleSubmit}
-                            disabled={questions[findIndex(question)].state.selected === -1}
+                            disabled={(questions[findIndex(question)].state.selected === -1) && !questions[findIndex(question)].state.answered}
                         >{submitLabel}</Button>
                     </Box>
                 </Box>

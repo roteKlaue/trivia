@@ -10,15 +10,38 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     Typography,
+    styled,
+    toggleButtonGroupClasses
 } from "@mui/material";
+import BrowseGalleryRoundedIcon from '@mui/icons-material/BrowseGalleryRounded';
+import Timer10SelectRoundedIcon from '@mui/icons-material/Timer10SelectRounded';
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { fetchQuestions } from "../functions/loadQuestions";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import type { Difficulty } from "../types/Difficulty";
 import type { Category } from "../types/Category";
 import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "./LoadingOverlay";
+import Tooltip from "@mui/material/Tooltip";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+    [`& .${toggleButtonGroupClasses.grouped}`]: {
+        margin: theme.spacing(0.5),
+        border: 0,
+        borderRadius: theme.shape.borderRadius,
+        [`&.${toggleButtonGroupClasses.disabled}`]: {
+            border: 0,
+        },
+    },
+    [`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]:
+    {
+        marginLeft: -1,
+        borderLeft: '1px solid transparent',
+    },
+}));
 
 const categories: Category[] = [
     "music",
@@ -36,19 +59,48 @@ const categories: Category[] = [
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
-    const [category, setCategory] = useState<Category>("general_knowledge");
+    const { startGame, showAnwsers, useTimer, rounds, shortTimer } = useGameStateStore();
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
-    const [amount, setAmount] = useState<number>(10);
+    const [category, setCategory] = useState<Category>("general_knowledge");
+    const [toggles, setToggles] = useState<string[]>(() =>
+        [showAnwsers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
+    );
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [amount, setAmount] = useState<number>(rounds);
     const [loading, setLoading] = useState(false);
-    const { startGame } = useGameStateStore();
     const navigate = useNavigate();
     useDocumentTitle("Trivia");
 
+    const handleToggles = (
+        _event: React.MouseEvent<HTMLElement>,
+        newFormats: string[],
+    ) => {
+        if (newFormats.includes("short") && !newFormats.includes("timed")) {
+            newFormats = newFormats.filter(format => format !== "short");
+        }
+        setToggles(newFormats);
+    };
+
     const handleSubmit = async () => {
+        if (loading) return;
+
         setLoading(true);
-        const questions = await fetchQuestions(difficulty, category, amount);
-        startGame(questions);
-        navigate("/trivia/game");
+
+        try {
+            closeSnackbar();
+            const questions = await fetchQuestions(difficulty, category, amount);
+            startGame(
+                questions,
+                toggles.includes("showAnswers"),
+                toggles.includes("timed"),
+                toggles.includes("short"),
+            );
+            navigate("/trivia/game");
+        } catch {
+            enqueueSnackbar("Error retrieving questions!", { variant: 'error' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (<>
@@ -56,20 +108,22 @@ const MainMenu = () => {
             <Paper elevation={4} sx={{ p: 3 }}>
                 <Box display="flex" flexDirection="column" gap={3} width={400}>
                     <Typography textAlign={"center"} variant="h4">Trivia</Typography>
-                    <FormControl fullWidth>
-                        <InputLabel>Category</InputLabel>
-                        <Select
-                            value={category}
-                            label="Category"
-                            onChange={(e) => setCategory(e.target.value as Category)}
-                        >
-                            {categories.map((cat) => (
-                                <MenuItem key={cat} value={cat}>
-                                    {cat.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Tooltip title="Choose the topic of the questions" arrow>
+                        <FormControl fullWidth>
+                            <InputLabel>Category</InputLabel>
+                            <Select
+                                value={category}
+                                label="Category"
+                                onChange={(e) => setCategory(e.target.value as Category)}
+                            >
+                                {categories.map((cat) => (
+                                    <MenuItem key={cat} value={cat}>
+                                        {cat.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Tooltip>
 
                     <FormControl>
                         <Typography sx={{ mb: 1 }}>Difficulty</Typography>
@@ -98,24 +152,52 @@ const MainMenu = () => {
                         </ToggleButtonGroup>
                     </FormControl>
 
+                    <Tooltip title="Number of questions in this quiz (5–30)" arrow>
+                        <Box>
+                            <Typography gutterBottom>
+                                Amount: {amount}
+                            </Typography>
 
-                    <Box>
-                        <Typography gutterBottom>
-                            Amount: {amount}
-                        </Typography>
+                            <Slider
+                                value={amount}
+                                min={5}
+                                max={30}
+                                step={1}
+                                marks
+                                valueLabelDisplay="auto"
+                                onChange={(_, value) => {
+                                    if (typeof value !== "number") return;
+                                    setAmount(value);
+                                }}
+                            />
+                        </Box>
+                    </Tooltip>
 
-                        <Slider
-                            value={amount}
-                            min={5}
-                            max={30}
-                            step={1}
-                            marks
-                            valueLabelDisplay="auto"
-                            onChange={(_, value) => {
-                                if (typeof value !== "number") return; // guard
-                                setAmount(value);
-                            }}
-                        />
+                    <Box sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
+                        <StyledToggleButtonGroup
+                            size="small"
+                            value={toggles}
+                            onChange={handleToggles}
+                            aria-label="toggles"
+                        >
+                            <Tooltip title="Show correct answers after each question" arrow>
+                                <ToggleButton value="showAnswers" aria-label="show answers">
+                                    <VisibilityIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="Timed mode" arrow>
+                                <ToggleButton value="timed" aria-label="timed">
+                                    <BrowseGalleryRoundedIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="Short Timer" arrow>
+                                <ToggleButton value="short" aria-label="short" disabled={!toggles.includes("timed")}>
+                                    <Timer10SelectRoundedIcon />
+                                </ToggleButton>
+                            </Tooltip>
+                        </StyledToggleButtonGroup>
                     </Box>
 
                     <Button variant="contained" onClick={handleSubmit}>
@@ -124,7 +206,6 @@ const MainMenu = () => {
                 </Box>
             </Paper>
         </Box>
-
 
         <LoadingOverlay
             open={loading}
