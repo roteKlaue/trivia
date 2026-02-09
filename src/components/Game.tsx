@@ -53,6 +53,16 @@ const Game = () => {
         playSfx(success ? successSfx : errorSfx);
     };
 
+    useEffect(() => {
+        window.addEventListener("keypress", e => {
+            if (e.key === "Enter") handleSubmit();
+            const parsed = +e.key;
+            if (isNaN(parsed)) return;
+            if (questions[findIndex(question)].state.answered) return;
+            if (parsed > 0 && parsed < 5) markAnwser(findIndex(question), parsed - 1);
+        });
+    }, []);
+
     const currentIndex = findIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
 
