@@ -11,7 +11,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining, failQuestion } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
