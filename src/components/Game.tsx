@@ -1,7 +1,7 @@
 import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
 import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
-import { Box, Button, Paper, Typography } from "@mui/material";
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { Question } from '../types/Question';
@@ -11,7 +11,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining, shortTimer } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -86,6 +86,10 @@ const Game = () => {
             <Typography>Round: {round + 1} of {rounds}</Typography>
             <Box sx={{ flexGrow: 1 }} />
             {useTimer && <Typography>Time left: {timerRemaining}s</Typography>}
+            {useTimer && <CircularProgress
+                sx={{ marginLeft: 2 }}
+                variant="determinate" 
+                value={100 - (timerRemaining / (shortTimer ? 10.0 : 30.0) * 100)} />}
         </Box>
         <Box sx={{
             flexGrow: 1,

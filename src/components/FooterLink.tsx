@@ -6,10 +6,10 @@ const FooterLink: FC<{ text: string, to: string }> = ({ to, text }) => {
     const [hover, setHover] = useState(false);
     const nav = useNavigate();
 
-    return (<Button color={"inherit"}>
+    return (<Button color={"inherit"} 
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}>
         <MuiLink
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
             onClick={() => nav(to)}
             component="span"
 
