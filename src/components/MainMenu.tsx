@@ -32,11 +32,11 @@ import { useState } from "react";
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
-    const { startGame, showAnwsers, useTimer, rounds, shortTimer } = useGameStateStore();
+    const { startGame, showAnswers, useTimer, rounds, shortTimer } = useGameStateStore();
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
     const [category, setCategory] = useState<Category>("general_knowledge");
     const [toggles, setToggles] = useState<string[]>(() =>
-        [showAnwsers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
+        [showAnswers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
     );
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [amount, setAmount] = useState<number>(rounds);
@@ -78,6 +78,8 @@ const MainMenu = () => {
                 toggles.includes("showAnswers"),
                 toggles.includes("timed"),
                 toggles.includes("short"),
+                toggles.includes("hp") || toggles.includes("death"),
+                toggles.includes("death")
             );
             navigate("/trivia/game");
         } catch {
