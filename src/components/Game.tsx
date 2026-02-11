@@ -1,7 +1,8 @@
 import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
 import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { Question } from '../types/Question';
@@ -11,7 +12,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnwser, guess, useTimer, timerRemaining } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, rounds, markAnswer, guess, useTimer, timerRemaining, shortTimer, lives } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Game = () => {
 
     const handleSelectAnswer = (index: number) => {
         if (questions[findIndex(question)].state.answered) return;
-        markAnwser(findIndex(question), index);
+        markAnswer(findIndex(question), index);
     };
 
     useEffect(() => {
@@ -55,17 +56,37 @@ const Game = () => {
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Enter") handleSubmit();
+            const selected = questions[round].state.selected;
 
-            const parsed = +e.key;
-            if (!Number.isNaN(parsed) && parsed > 0 && parsed < 5) {
-                handleSelectAnswer(parsed - 1);
+            if (e.key === "Enter") {
+                handleSubmit();
+                return;
             }
+
+            const num = Number(e.key);
+            if (num >= 1 && num <= 4) {
+                handleSelectAnswer(num - 1);
+                return;
+            }
+
+            if (selected === -1) return;
+
+            const deltas: Record<string, number> = {
+                ArrowLeft: 3,
+                ArrowRight: 1,
+                ArrowUp: 2,
+                ArrowDown: 2,
+            };
+
+            const delta = deltas[e.key];
+            if (delta === void 0) return;
+
+            handleSelectAnswer((selected + delta) % 4);
         };
 
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [handleSubmit, handleSelectAnswer]);
+    }, [round, questions, handleSubmit, handleSelectAnswer]);
 
     const currentIndex = findIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
@@ -78,15 +99,39 @@ const Game = () => {
         display: "flex",
         flexDirection: "column"
     }}>
-        <Box sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center"
-        }}>
-            <Typography>Round: {round + 1} of {rounds}</Typography>
-            <Box sx={{ flexGrow: 1 }} />
-            {useTimer && <Typography>Time left: {timerRemaining}s</Typography>}
+        <Box
+            sx={{
+                width: "100%",
+                display: "grid",
+                gridTemplateColumns: "1fr auto",
+                alignItems: "center",
+                rowGap: 1,
+                columnGap: 2
+            }}
+        >
+            <Typography>
+                Round: {round + 1} of {rounds}
+            </Typography>
+
+            {useTimer && (
+                <Box display="flex" alignItems="center" gap={2}>
+                    <Typography>
+                        Time left: {timerRemaining}s
+                    </Typography>
+
+                    <CircularProgress
+                        variant="determinate"
+                        value={100 - (timerRemaining / (shortTimer ? 10 : 30) * 100)}
+                    />
+                </Box>
+            )}
+
+            {lives !== -1 && (<Box display={"flex"} alignItems={"center"}>
+                <Typography sx={{ marginRIght: "1em" }}>Lives Left: </Typography>
+                {Array.from({ length: lives }).map((_, i) => <FavoriteIcon key={i} />)}
+            </Box>)}
         </Box>
+
         <Box sx={{
             flexGrow: 1,
             display: "flex",

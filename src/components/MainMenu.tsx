@@ -10,60 +10,33 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     Typography,
-    styled,
-    toggleButtonGroupClasses
 } from "@mui/material";
 import BrowseGalleryRoundedIcon from '@mui/icons-material/BrowseGalleryRounded';
 import Timer10SelectRoundedIcon from '@mui/icons-material/Timer10SelectRounded';
+import { StyledToggleButtonGroup } from "./StyledToggleButtonGroup";
+import WhatshotIcon from "@mui/icons-material/WhatshotRounded";
+import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
+import { categories, type Category } from "../types/Category";
 import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { fetchQuestions } from "../functions/loadQuestions";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import type { Difficulty } from "../types/Difficulty";
-import type { Category } from "../types/Category";
 import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "./LoadingOverlay";
 import Tooltip from "@mui/material/Tooltip";
 import { useSnackbar } from "notistack";
+// import HardcoreIcon from "./Skull";
 import { useState } from "react";
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-    [`& .${toggleButtonGroupClasses.grouped}`]: {
-        margin: theme.spacing(0.5),
-        border: 0,
-        borderRadius: theme.shape.borderRadius,
-        [`&.${toggleButtonGroupClasses.disabled}`]: {
-            border: 0,
-        },
-    },
-    [`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]:
-    {
-        marginLeft: -1,
-        borderLeft: '1px solid transparent',
-    },
-}));
-
-const categories: Category[] = [
-    "music",
-    "sport_and_leisure",
-    "film_and_tv",
-    "arts_and_literature",
-    "history",
-    "society_and_culture",
-    "science",
-    "geography",
-    "food_and_drink",
-    "general_knowledge",
-];
 
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
-    const { startGame, showAnwsers, useTimer, rounds, shortTimer } = useGameStateStore();
+    const { startGame, showAnswers, useTimer, rounds, shortTimer } = useGameStateStore();
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
     const [category, setCategory] = useState<Category>("general_knowledge");
     const [toggles, setToggles] = useState<string[]>(() =>
-        [showAnwsers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
+        [showAnswers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
     );
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [amount, setAmount] = useState<number>(rounds);
@@ -75,8 +48,19 @@ const MainMenu = () => {
         _event: React.MouseEvent<HTMLElement>,
         newFormats: string[],
     ) => {
+        if (newFormats.includes("hard")) {
+            setToggles(["hard"]);
+            return;
+        }
+
         if (newFormats.includes("short") && !newFormats.includes("timed")) {
             newFormats = newFormats.filter(format => format !== "short");
+        }
+        if (newFormats.includes("death") && !toggles.includes("death")) {
+            newFormats = newFormats.filter(e => e !== "hp");
+        }
+        if (newFormats.includes("hp") && !toggles.includes("hp")) {
+            newFormats = newFormats.filter(e => e !== "death");
         }
         setToggles(newFormats);
     };
@@ -94,6 +78,8 @@ const MainMenu = () => {
                 toggles.includes("showAnswers"),
                 toggles.includes("timed"),
                 toggles.includes("short"),
+                toggles.includes("hp") || toggles.includes("death"),
+                toggles.includes("death")
             );
             navigate("/trivia/game");
         } catch {
@@ -113,6 +99,7 @@ const MainMenu = () => {
                             <InputLabel>Category</InputLabel>
                             <Select
                                 value={category}
+                                disabled={toggles.includes("hard")}
                                 label="Category"
                                 onChange={(e) => setCategory(e.target.value as Category)}
                             >
@@ -131,6 +118,7 @@ const MainMenu = () => {
                         <ToggleButtonGroup
                             exclusive
                             fullWidth
+                            disabled={toggles.includes("hard")}
                             value={difficulty}
                             onChange={(_, value) => {
                                 if (!value) return;
@@ -163,6 +151,7 @@ const MainMenu = () => {
                                 min={5}
                                 max={30}
                                 step={1}
+                                disabled={toggles.includes("hard")}
                                 marks
                                 valueLabelDisplay="auto"
                                 onChange={(_, value) => {
@@ -181,22 +170,55 @@ const MainMenu = () => {
                             aria-label="toggles"
                         >
                             <Tooltip title="Show correct answers after each question" arrow>
-                                <ToggleButton value="showAnswers" aria-label="show answers">
+                                <ToggleButton
+                                    disabled={toggles.includes("hard")}
+                                    value="showAnswers"
+                                    aria-label="show answers">
                                     <VisibilityIcon />
                                 </ToggleButton>
                             </Tooltip>
 
                             <Tooltip title="Timed mode" arrow>
-                                <ToggleButton value="timed" aria-label="timed">
+                                <ToggleButton
+                                    disabled={toggles.includes("hard")}
+                                    value="timed"
+                                    aria-label="timed">
                                     <BrowseGalleryRoundedIcon />
                                 </ToggleButton>
                             </Tooltip>
 
                             <Tooltip title="Short Timer" arrow>
-                                <ToggleButton value="short" aria-label="short" disabled={!toggles.includes("timed")}>
+                                <ToggleButton
+                                    value="short"
+                                    aria-label="short"
+                                    disabled={!toggles.includes("timed") || toggles.includes("hard")}>
                                     <Timer10SelectRoundedIcon />
                                 </ToggleButton>
                             </Tooltip>
+
+                            <Tooltip title="Lives Mode" arrow>
+                                <ToggleButton
+                                    disabled={toggles.includes("hard")}
+                                    value="hp"
+                                    aria-label="hp">
+                                    <FavoriteIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="Sudden Death Mode" arrow>
+                                <ToggleButton
+                                    disabled={toggles.includes("hard")}
+                                    value="death"
+                                    aria-label="death">
+                                    <WhatshotIcon color={toggles.includes("hard") ? void 0 : "error"} />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            {/* <Tooltip title="Hardcore Mode" arrow>
+                                <ToggleButton value="hard" aria-label="hard">
+                                    <HardcoreIcon color="error" />
+                                </ToggleButton>
+                            </Tooltip> */}
                         </StyledToggleButtonGroup>
                     </Box>
 

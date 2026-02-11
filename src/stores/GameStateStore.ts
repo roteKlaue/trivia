@@ -7,7 +7,7 @@ type QuestionState = {
     correct: boolean;
     cachedAnswers: string[];
     selected: number;
-}
+};
 
 type QuestionUnion = {
     question: Question;
@@ -20,22 +20,31 @@ export type GameState = {
     rounds: number;
     useTimer: boolean;
     shortTimer: boolean;
-    showAnwsers: boolean;
+    showAnswers: boolean;
+    lives: number;
+    instaDeath: boolean;
 
     questions: QuestionUnion[];
     currentQuestion: Question | null;
 
-    startGame(questions: Question[], showAnwsers: boolean, useTimer: boolean, shortTimer: boolean): void;
-    nextQuestion(): void;
-    failQuestion(): void;
-    guess(input: string): boolean;
-    markAnwser(index: number, anwser: number): void;
+    startGame: (
+        questions: Question[],
+        showAnswers: boolean,
+        useTimer: boolean,
+        shortTimer: boolean,
+        enableLives: boolean,
+        instaDeath: boolean
+    ) => void;
+    nextQuestion: () => void;
+    failQuestion: () => void;
+    guess: (input: string) => boolean;
+    markAnswer: (index: number, answer: number) => void;
 
     timerRemaining: number;
     timerActive: boolean;
     timerId: number | null;
-    startTimer(): void;
-    stopTimer(): void;
+    startTimer: () => void;
+    stopTimer: () => void;
 };
 
 export const useGameStateStore = create<GameState>((set, get) => ({
@@ -44,73 +53,96 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     rounds: 10,
     useTimer: false,
     shortTimer: false,
-    showAnwsers: true,
+    showAnswers: true,
+    lives: -1,
+    instaDeath: false,
+
     questions: [],
-
     currentQuestion: null,
-    questionsStates: [],
 
-    startGame(questions, showAnwsers, useTimer, shortTimer) {
-        const mappedQuestions: QuestionUnion[] = questions.map(question => ({
-            question,
+    timerRemaining: 0,
+    timerActive: false,
+    timerId: null,
+
+    startGame: (questions, showAnswers, useTimer, shortTimer, enableLives, instaDeath) => {
+        if (!questions || questions.length === 0) {
+            set({
+                questions: [],
+                currentQuestion: null,
+                rounds: 0,
+                round: 0,
+                score: 0,
+            });
+            return;
+        }
+
+        get().stopTimer();
+
+        const mappedQuestions: QuestionUnion[] = questions.map((q) => ({
+            question: q,
             state: {
                 answered: false,
                 correct: false,
                 selected: -1,
-                cachedAnswers: shuffle([question.correctAnswer, ...question.incorrectAnswers])
-            }
+                cachedAnswers: shuffle([q.correctAnswer, ...q.incorrectAnswers]),
+            },
         }));
 
         set({
             questions: mappedQuestions,
             round: 0,
-            rounds: questions.length,
+            rounds: mappedQuestions.length,
             score: 0,
-            currentQuestion: questions[0],
-            showAnwsers,
+            currentQuestion: mappedQuestions[0].question,
+            showAnswers,
             useTimer,
-            shortTimer
+            shortTimer,
+            lives: enableLives ? (instaDeath ? 1 : 3) : -1,
+            instaDeath,
         });
 
-        get().startTimer();
+        if (useTimer) {
+            get().startTimer();
+        }
     },
 
     failQuestion: () => {
         get().stopTimer();
 
-        const { currentQuestion, questions, round } = get();
-        if (!currentQuestion) return false;
+        const { currentQuestion, questions, round, lives } = get();
+        if (!currentQuestion) return;
 
+        const newLives = lives !== -1 ? Math.max(0, lives - 1) : -1;
+        const updated = questions.map((p, i) =>
+            i === round
+                ? { ...p, state: { ...p.state, answered: true, correct: false } }
+                : p
+        );
 
         set({
-            questions: questions.map((p, i) => ({
-                ...p, state: {
-                    ...p.state,
-                    correct: p.state.correct,
-                    answered: i === round ? true : p.state.answered,
-                }
-            }))
+            questions: updated,
+            lives: newLives,
         });
     },
 
     guess: (input) => {
         get().stopTimer();
 
-        const { currentQuestion, questions, round } = get();
+        const { currentQuestion, round, lives } = get();
         if (!currentQuestion) return false;
 
         const matches = currentQuestion.correctAnswer === input;
+        const newLives = lives !== -1 ? (matches ? lives : Math.max(0, lives - 1)) : -1;
 
         set((s) => ({
-            score: s.score + (matches ? 1 : 0), questions: questions.map((p, i) => ({
-                ...p, state: {
-                    ...p.state,
-                    correct: i === round ? matches : p.state.correct,
-                    answered: i === round ? true : p.state.answered,
-                }
-            }))
+            score: s.score + (matches ? 1 : 0),
+            lives: newLives,
+            questions: s.questions.map((p, i) =>
+                i === round
+                    ? { ...p, state: { ...p.state, correct: matches, answered: true } }
+                    : p
+            ),
         }));
-
 
         return matches;
     },
@@ -120,8 +152,10 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
         set((s) => {
             const nextRound = s.round + 1;
+            const gameOverBecauseLives = s.lives === 0;
+            const reachedEnd = nextRound >= s.questions.length;
 
-            if (nextRound >= s.questions.length) {
+            if (gameOverBecauseLives || reachedEnd) {
                 return {
                     round: nextRound,
                     currentQuestion: null,
@@ -134,22 +168,27 @@ export const useGameStateStore = create<GameState>((set, get) => ({
             };
         });
 
-        get().startTimer();
+        const { useTimer, timerActive } = get();
+        if (useTimer && !timerActive) {
+            get().startTimer();
+        }
     },
 
-    timerRemaining: 0,
-    timerActive: false,
-    timerId: null,
-
-    markAnwser(index, anwser) {
+    markAnswer: (index, answer) => {
         const { questions } = get();
-        questions[index].state.selected = anwser;
-        set({ questions: [...questions] });
+        if (!questions || index < 0 || index >= questions.length) return;
+
+        const updated = questions.slice();
+        updated[index] = {
+            ...updated[index],
+            state: { ...updated[index].state, selected: answer },
+        };
+
+        set({ questions: updated });
     },
 
     startTimer: () => {
         const { useTimer, shortTimer, timerActive } = get();
-
         if (!useTimer) return;
         if (timerActive) return;
 
@@ -157,7 +196,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
         set({
             timerRemaining: duration,
-            timerActive: true
+            timerActive: true,
         });
 
         const id = window.setInterval(() => {
@@ -177,7 +216,6 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
     stopTimer: () => {
         const { timerId } = get();
-
         if (!timerId) return;
 
         clearInterval(timerId);
@@ -185,7 +223,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         set({
             timerId: null,
             timerActive: false,
-            timerRemaining: 0
+            timerRemaining: 0,
         });
-    }
+    },
 }));
