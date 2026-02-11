@@ -56,6 +56,18 @@ const Game = () => {
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Enter") handleSubmit();
+            if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key) 
+                && questions[round].state.selected !== -1) {
+                if (e.key === "ArrowLeft") {
+                    handleSelectAnswer((questions[round].state.selected + 3) % 4);
+                }
+                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                    handleSelectAnswer((questions[round].state.selected + 2) % 4);
+                }
+                if (e.key === "ArrowRight") {
+                    handleSelectAnswer((questions[round].state.selected + 1) % 4);
+                }
+            }
 
             const parsed = +e.key;
             if (!Number.isNaN(parsed) && parsed > 0 && parsed < 5) {
