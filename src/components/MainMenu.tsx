@@ -13,11 +13,13 @@ import {
 } from "@mui/material";
 import BrowseGalleryRoundedIcon from '@mui/icons-material/BrowseGalleryRounded';
 import Timer10SelectRoundedIcon from '@mui/icons-material/Timer10SelectRounded';
+import DirectionsRunRoundedIcon from '@mui/icons-material/DirectionsRunRounded';
+import Timer3SelectRoundedIcon from '@mui/icons-material/Timer3SelectRounded';
+import { useGameStateStore, type GameConfig } from "../stores/GameStateStore";
 import { StyledToggleButtonGroup } from "./StyledToggleButtonGroup";
 import WhatshotIcon from "@mui/icons-material/WhatshotRounded";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { categories, type Category } from "../types/Category";
-import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { fetchQuestions } from "../functions/loadQuestions";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -26,20 +28,25 @@ import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "./LoadingOverlay";
 import Tooltip from "@mui/material/Tooltip";
 import { useSnackbar } from "notistack";
-// import HardcoreIcon from "./Skull";
+import HardcoreIcon from "./Skull";
 import { useState } from "react";
 
 const difficulties: (Difficulty | "mix")[] = ["easy", "medium", "hard", "mix"];
 
 const MainMenu = () => {
-    const { startGame, showAnswers, useTimer, rounds, shortTimer } = useGameStateStore();
+    const { startGame, config } = useGameStateStore();
     const [difficulty, setDifficulty] = useState<Difficulty | "mix">("easy");
     const [category, setCategory] = useState<Category>("general_knowledge");
-    const [toggles, setToggles] = useState<string[]>(() =>
-        [showAnswers && "showAnswers", useTimer && "timed", shortTimer && "short"].filter(Boolean) as string[]
-    );
+    const [toggles, setToggles] = useState<string[]>(() => [
+        config.answers && "showAnswers",
+        config.timer !== "off" && "timed",
+        config.timer === "short" && "short",
+        config.timer === "ultra" && "shorter",
+        config.lives === "lives" && "hp",
+        config.lives === "suddenDeath" && "death"
+    ].filter(Boolean) as string[]);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const [amount, setAmount] = useState<number>(rounds);
+    const [amount, setAmount] = useState<number>(config.rounds);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     useDocumentTitle("Trivia");
@@ -53,14 +60,29 @@ const MainMenu = () => {
             return;
         }
 
-        if (newFormats.includes("short") && !newFormats.includes("timed")) {
-            newFormats = newFormats.filter(format => format !== "short");
+        if (newFormats.includes("speeder") && !toggles.includes("speeder")) {
+            setToggles(newFormats.filter(v => v === "speeder" || v === "showAnswers"));
+            return;
         }
-        if (newFormats.includes("death") && !toggles.includes("death")) {
-            newFormats = newFormats.filter(e => e !== "hp");
+
+        if (!newFormats.includes("timed")) {
+            newFormats = newFormats.filter(v => v !== "short" && v !== "shorter");
         }
+
+        if (newFormats.includes("short") && !toggles.includes("short")) {
+            newFormats = newFormats.filter(v => v !== "shorter");
+        }
+
+        if (newFormats.includes("shorter") && !toggles.includes("shorter")) {
+            newFormats = newFormats.filter(v => v !== "short");
+        }
+
         if (newFormats.includes("hp") && !toggles.includes("hp")) {
-            newFormats = newFormats.filter(e => e !== "death");
+            newFormats = newFormats.filter(v => v !== "death");
+        }
+
+        if (newFormats.includes("death") && !toggles.includes("death")) {
+            newFormats = newFormats.filter(v => v !== "hp");
         }
         setToggles(newFormats);
     };
@@ -70,16 +92,32 @@ const MainMenu = () => {
 
         setLoading(true);
 
+        const config: GameConfig = {
+            difficulty,
+            rounds: amount,
+            timer: toggles.includes("shorter")
+                ? "ultra"
+                : toggles.includes("short")
+                    ? "short"
+                    : toggles.includes("timed")
+                        ? "normal"
+                        : "off",
+
+            lives: toggles.includes("death")
+                ? "suddenDeath"
+                : toggles.includes("hp")
+                    ? "lives"
+                    : "none",
+
+            answers: toggles.includes("showAnswers") ? "shown" : "hidden",
+        };
+
         try {
             closeSnackbar();
             const questions = await fetchQuestions(difficulty, category, amount);
             startGame(
                 questions,
-                toggles.includes("showAnswers"),
-                toggles.includes("timed"),
-                toggles.includes("short"),
-                toggles.includes("hp") || toggles.includes("death"),
-                toggles.includes("death")
+                config
             );
             navigate("/trivia/game");
         } catch {
@@ -187,12 +225,30 @@ const MainMenu = () => {
                                 </ToggleButton>
                             </Tooltip>
 
-                            <Tooltip title="Short Timer" arrow>
+                            <Tooltip title="10 Second Timer" arrow>
                                 <ToggleButton
                                     value="short"
                                     aria-label="short"
                                     disabled={!toggles.includes("timed") || toggles.includes("hard")}>
                                     <Timer10SelectRoundedIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="3 Second Timer" arrow>
+                                <ToggleButton
+                                    value="shorter"
+                                    aria-label="shorter"
+                                    disabled={!toggles.includes("timed") || toggles.includes("hard")}>
+                                    <Timer3SelectRoundedIcon />
+                                </ToggleButton>
+                            </Tooltip>
+
+                            <Tooltip title="Speedrun Mode" arrow>
+                                <ToggleButton
+                                    value="speeder"
+                                    aria-label="speeder"
+                                    disabled={toggles.includes("hard")}>
+                                    <DirectionsRunRoundedIcon />
                                 </ToggleButton>
                             </Tooltip>
 
@@ -214,11 +270,11 @@ const MainMenu = () => {
                                 </ToggleButton>
                             </Tooltip>
 
-                            {/* <Tooltip title="Hardcore Mode" arrow>
+                            <Tooltip title="Hardcore Mode" arrow>
                                 <ToggleButton value="hard" aria-label="hard">
                                     <HardcoreIcon color="error" />
                                 </ToggleButton>
-                            </Tooltip> */}
+                            </Tooltip>
                         </StyledToggleButtonGroup>
                     </Box>
 

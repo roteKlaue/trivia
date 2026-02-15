@@ -11,7 +11,7 @@ type AnswerButtonProps = {
 }
 
 const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }) => {
-    const { questions, showAnswers } = useGameStateStore();
+    const { questions, config } = useGameStateStore();
 
     const findIndex = (question: Question | null) => {
         const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
@@ -34,7 +34,7 @@ const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }
         }
     }
 
-    if (correct && showAnswers) {
+    if (correct && config.answers) {
         color = "success";
     }
 
@@ -46,7 +46,7 @@ const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }
                 px: 2,
                 textWrap: "balance"
             }}
-            variant={(isSelected || correct && showAnswers) ? "contained" : "outlined"}
+            variant={(isSelected || correct && config.answers) ? "contained" : "outlined"}
             color={color}
             onClick={() => onSelect(index)}
         >

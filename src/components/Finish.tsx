@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 const Finish = () => {
     const navigate = useNavigate();
-    const { rounds, score } = useGameStateStore();
+    const { config, score } = useGameStateStore();
 
-    const percent = Math.round((score / Math.max(rounds, 1)) * 100);
-    useDocumentTitle(`Trivia – ${percent}% (${score}/${rounds})`);
+    const percent = Math.round((score / Math.max(config.rounds, 1)) * 100);
+    useDocumentTitle(`Trivia – ${percent}% (${score}/${config.rounds})`);
 
     const message =
         percent === 100 ? "Perfect run!" :
@@ -38,7 +38,7 @@ const Finish = () => {
                     </Typography>
 
                     <Typography variant="h5">
-                        {score} / {rounds}
+                        {score} / {config.rounds}
                     </Typography>
 
                     <LinearProgress

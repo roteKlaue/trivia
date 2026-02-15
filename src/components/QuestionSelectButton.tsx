@@ -10,7 +10,7 @@ type Props = {
 
 const QuestionSelectButton: FC<Props> = ({ index, round, correct }) => {
     const color = index > round
-        ? undefined
+        ? void 0
         : correct === true
             ? "success"
             : index === round ? "primary" : "error";
