@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer.tsx';
 import ModeSwitch from './ModeSwitch.tsx';
 import { useState } from 'react';
+import { FireBackground } from './FireComponent.tsx';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -27,9 +28,20 @@ const Navbar = () => {
                         sx={{ cursor: 'pointer' }}
                         marginLeft={1}
                         display='flex'
+                        position="relative"
                         justifyContent='center'
                         alignItems='center'>
-                        <PsychologyAltRoundedIcon />
+                        <FireBackground
+                            sx={{
+                                top: 12,
+                                left: 19,
+                                width: 36,
+                                height: 36,
+                                opacity: 0.6,
+                            }}
+                            scale={2.5}
+                        />
+                        <PsychologyAltRoundedIcon sx={{ zIndex:3 }} />
                         <Typography variant='h6' paddingLeft={1}>Trivia</Typography>
                     </Box>
                     <Box flexGrow={1} height='100%' />

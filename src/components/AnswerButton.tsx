@@ -11,30 +11,25 @@ type AnswerButtonProps = {
 }
 
 const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }) => {
-    const { questions, config } = useGameStateStore();
+    const { questions, config, findQuestionIndex } = useGameStateStore();
 
-    const findIndex = (question: Question | null) => {
-        const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
-        return index;
-    }
+    const questionIndex = findQuestionIndex(question);
+    if (questionIndex < 0) return null;
 
-    const selected = questions[findIndex(question)].state.selected
-    const answered = questions[findIndex(question)].state.answered
-    const correct = questions[findIndex(question)].state.answered &&
-        questions[findIndex(question)].state.cachedAnswers[index] ===
-        questions[findIndex(question)].question.correctAnswer;
-    const isSelected = selected === index;
+    const qState = questions[questionIndex];
+    const selected = qState.state.selected === index;
+    const answered = qState.state.answered;
+    const correct =
+        answered &&
+        qState.state.cachedAnswers[index] === qState.question.correctAnswer;
 
     let color: "primary" | "success" | "error" = "primary";
-    if (isSelected) {
-        if (answered) {
-            color = correct ? "success" : "error";
-        } else {
-            color = "primary";
-        }
+
+    if (selected && answered) {
+        color = correct ? "success" : "error";
     }
 
-    if (correct && config.answers) {
+    if (correct && config.answers === "shown") {
         color = "success";
     }
 
@@ -46,7 +41,7 @@ const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }
                 px: 2,
                 textWrap: "balance"
             }}
-            variant={(isSelected || correct && config.answers) ? "contained" : "outlined"}
+            variant={(selected || (correct && config.answers === "shown")) ? "contained" : "outlined"}
             color={color}
             onClick={() => onSelect(index)}
         >

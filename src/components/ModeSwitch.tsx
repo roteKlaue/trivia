@@ -4,15 +4,15 @@ import { useThemeStore } from '../stores/ThemeStore';
 import { IconButton, Tooltip } from '@mui/material';
 
 const ModeSwitch = () => {
-    const { isDarkMode, toggleTheme } = useThemeStore();
+    const { mode, toggleMode } = useThemeStore();
 
     return (<Tooltip title='Toggle Theme' arrow>
-        <IconButton onClick={toggleTheme}
+        <IconButton onClick={toggleMode}
             sx={{
                 transition: 'transform 0.3s ease, opacity 0.3s ease, background 0.3s ease',
-                transform: isDarkMode ? 'rotate(0deg)' : 'rotate(360deg)',
+                transform: mode === "dark" ? 'rotate(0deg)' : 'rotate(360deg)',
             }}>
-            {isDarkMode ? (
+            {mode === "dark" ? (
                 <LightModeIcon />
             ) : (
                 <DarkModeIcon />

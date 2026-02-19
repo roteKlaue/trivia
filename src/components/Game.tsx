@@ -1,15 +1,15 @@
 import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
-import { useGameStateStore, lifeMap, durationMap } from "../stores/GameStateStore";
 import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
+import { useGameStateStore, durationMap } from "../stores/GameStateStore";
 import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
-import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { Question } from '../types/Question';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
+import LivesDisplay from "./LivesDisplay";
 
 const Game = () => {
     const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, timerRemaining, config } = useGameStateStore();
@@ -126,10 +126,7 @@ const Game = () => {
                 </Box>
             )}
 
-            {config.lives !== "none" && (<Box display={"flex"} alignItems={"center"}>
-                <Typography sx={{ marginRIght: "1em" }}>Lives Left: </Typography>
-                {Array.from({ length: lifeMap[config.lives] }).map((_, i) => <FavoriteIcon key={i} />)}
-            </Box>)}
+            <LivesDisplay />
         </Box>
 
         <Box sx={{

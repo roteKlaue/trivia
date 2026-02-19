@@ -59,6 +59,7 @@ export type GameState = {
     failQuestion: () => void;
     guess: (input: string) => boolean;
     markAnswer: (index: number, answer: number) => void;
+    findQuestionIndex(question?: Question | null | undefined): number;
 
     timerRemaining: number;
     timerActive: boolean;
@@ -76,6 +77,7 @@ const normalizeConfig = (c: GameConfig): GameConfig => {
             timer: "ultra",
             lives: "suddenDeath",
             rounds: 50,
+            answers: "hidden"
         };
     }
 
@@ -251,6 +253,11 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         }, 1000);
 
         set({ timerId: id });
+    },
+
+    findQuestionIndex(question) {
+        const { questions } = get();
+        return question ? questions.findIndex(q => q.question.id === question.id) : -1;
     },
 
     stopTimer: () => {

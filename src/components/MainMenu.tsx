@@ -23,6 +23,7 @@ import { categories, type Category } from '../types/Category';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import type { Difficulty } from '../types/Difficulty';
+import { useThemeStore } from "../stores/ThemeStore";
 import { useNavigate } from 'react-router-dom';
 import LoadingOverlay from './LoadingOverlay';
 import { useEffect, useState } from 'react';
@@ -51,6 +52,7 @@ const MainMenu = () => {
     const [amount, setAmount] = useState<number>(config.rounds === 50 ? 30 : config.rounds);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { setTheme } = useThemeStore();
     useDocumentTitle('Trivia');
 
     const handleToggles = (
@@ -58,10 +60,12 @@ const MainMenu = () => {
         newFormats: string[],
     ) => {
         if (newFormats.includes('hard')) {
+            setTheme("fire");
             setToggles(['hard']);
             return;
         }
 
+        setTheme("default");
         if (newFormats.includes('speeder') && !toggles.includes('speeder')) {
             setToggles(newFormats.filter(v => v === 'speeder' || v === 'showAnswers'));
             return;

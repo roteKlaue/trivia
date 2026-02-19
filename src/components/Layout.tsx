@@ -8,11 +8,12 @@ import { Box } from '@mui/material';
 import Navbar from './Navbar.tsx';
 import Footer from './Footer.tsx';
 import { useEffect } from 'react';
+import { FireComponent } from './FireComponent.tsx';
 
 const Layout = () => {
     const { currentMusic, playMusic } = useSoundPlaybackStore();
     const { volume, isMuted } = useSoundSettingsStore();
-    
+
     useEffect(() => {
         if (volume > 0 && !isMuted && !currentMusic) {
             playMusic(musicFile);
@@ -34,6 +35,15 @@ const Layout = () => {
             justifyContent='center'>
             <Outlet />
         </Box>
+        <FireComponent
+            position={{ x: 16, y: 16 }}
+            sx={{ bottom: '90px', left: '40px', position: 'absolute', transform: `scale(4)` }}
+        />
+
+        <FireComponent
+            position={{ x: 0, y: 0 }}
+            sx={{ bottom: '90px', right: '40px', position: 'absolute', transform: `scale(4)` }}
+        />
         <Footer />
         <SoundProvider />
     </Box>);
