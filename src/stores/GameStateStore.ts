@@ -1,9 +1,12 @@
+import { fetchQuestions } from "../functions/loadQuestions";
+import type { Difficulty } from "../types/Difficulty";
+import type { Category } from "../types/Category";
 import type { Question } from "../types/Question";
 import { shuffle } from "../functions/shuffle";
 import { create } from "zustand";
 
-export type DifficultyMode = "easy" | "medium" | "hard" | "mix";
 export type TimerMode = "off" | "normal" | "short" | "ultra";
+export type Mode = "hardcore" | "default" | "speedrun";
 export type LifeMode = "none" | "lives" | "suddenDeath";
 export type AnswerMode = "hidden" | "shown";
 
@@ -23,8 +26,10 @@ export type GameConfig = {
     timer: TimerMode;
     lives: LifeMode;
     answers: AnswerMode;
-    difficulty: DifficultyMode;
+    difficulty: Difficulty | "mix";
+    category: Category;
     rounds: number;
+    mode: Mode;
 };
 
 export const durationMap: Record<TimerMode, number> = {
@@ -49,10 +54,7 @@ export type GameState = {
     questions: QuestionUnion[];
     currentQuestion: Question | null;
 
-    startGame: (
-        questions: Question[],
-        props: GameConfig
-    ) => void;
+    startGame: (props: GameConfig) => Promise<void>;
     nextQuestion: () => void;
     failQuestion: () => void;
     guess: (input: string) => boolean;
@@ -63,6 +65,21 @@ export type GameState = {
     timerId: number | null;
     startTimer: () => void;
     stopTimer: () => void;
+};
+
+const normalizeConfig = (c: GameConfig): GameConfig => {
+    if (c.mode === "hardcore") {
+        return {
+            ...c,
+            difficulty: "hard",
+            category: "all",
+            timer: "ultra",
+            lives: "suddenDeath",
+            rounds: 50,
+        };
+    }
+
+    return c;
 };
 
 export const useGameStateStore = create<GameState>((set, get) => ({
@@ -76,6 +93,8 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         answers: "shown",
         difficulty: "mix",
         rounds: 10,
+        category: "general_knowledge",
+        mode: "default"
     },
 
     questions: [],
@@ -85,7 +104,15 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     timerActive: false,
     timerId: null,
 
-    startGame: (questions, config) => {
+    startGame: async inputConfig => {
+        const config = normalizeConfig(inputConfig);
+
+        const questions = await fetchQuestions(
+            config.difficulty,
+            config.category,
+            config.rounds
+        );
+
         if (!questions || questions.length === 0) {
             set({
                 questions: [],
@@ -96,7 +123,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
         get().stopTimer();
 
-        const mappedQuestions: QuestionUnion[] = questions.map((q) => ({
+        const mappedQuestions: QuestionUnion[] = questions.map(q => ({
             question: q,
             state: {
                 answered: false,
@@ -128,9 +155,8 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
         const newLives = currentHP !== -1 ? Math.max(0, currentHP - 1) : -1;
         const updated = questions.map((p, i) =>
-            i === round
-                ? { ...p, state: { ...p.state, answered: true, correct: false } }
-                : p
+            i !== round ? p
+                : { ...p, state: { ...p.state, answered: true, correct: false } }
         );
 
         set({
@@ -139,7 +165,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         });
     },
 
-    guess: (input) => {
+    guess: input => {
         get().stopTimer();
 
         const { currentQuestion, round, currentHP } = get();
@@ -148,9 +174,9 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         const matches = currentQuestion.correctAnswer === input;
         const newLives = currentHP !== -1 ? (matches ? currentHP : Math.max(0, currentHP - 1)) : -1;
 
-        set((s) => ({
+        set(s => ({
             score: s.score + (matches ? 1 : 0),
-            lives: newLives,
+            currentHP: newLives,
             questions: s.questions.map((p, i) =>
                 i === round
                     ? { ...p, state: { ...p.state, correct: matches, answered: true } }
@@ -203,8 +229,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
     startTimer: () => {
         const { config, timerActive } = get();
-        if (config.timer === "off") return;
-        if (timerActive) return;
+        if (config.timer === "off" || timerActive) return;
 
         const duration = durationMap[config.timer];
 

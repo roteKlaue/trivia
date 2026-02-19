@@ -9,6 +9,7 @@ export const categories = [
     "geography",
     "food_and_drink",
     "general_knowledge",
+    "all"
 ] as const;
 
 export type Category = typeof categories[number];
