@@ -28,7 +28,7 @@ const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const handleChange = (index: number) => {
-        if (index === undefined || index === null) return;
+        if (index === void 0 || index === null) return;
         setQuestion(questions[index].question);
     };
 

@@ -1,9 +1,9 @@
 import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import { useGameStateStore, lifeMap, durationMap } from "../stores/GameStateStore";
 import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
 import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
-import { useGameStateStore } from "../stores/GameStateStore";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { Question } from '../types/Question';
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import AnswerButton from "./AnswerButton";
 import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, rounds, markAnswer, guess, useTimer, timerRemaining, shortTimer, lives } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, timerRemaining, config } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -110,10 +110,10 @@ const Game = () => {
             }}
         >
             <Typography>
-                Round: {round + 1} of {rounds}
+                Round: {round + 1} of {config.rounds}
             </Typography>
 
-            {useTimer && (
+            {config.timer !== "off" && (
                 <Box display="flex" alignItems="center" gap={2}>
                     <Typography>
                         Time left: {timerRemaining}s
@@ -121,14 +121,14 @@ const Game = () => {
 
                     <CircularProgress
                         variant="determinate"
-                        value={100 - (timerRemaining / (shortTimer ? 10 : 30) * 100)}
+                        value={100 - (timerRemaining / (durationMap[config.timer]) * 100)}
                     />
                 </Box>
             )}
 
-            {lives !== -1 && (<Box display={"flex"} alignItems={"center"}>
+            {config.lives !== "none" && (<Box display={"flex"} alignItems={"center"}>
                 <Typography sx={{ marginRIght: "1em" }}>Lives Left: </Typography>
-                {Array.from({ length: lives }).map((_, i) => <FavoriteIcon key={i} />)}
+                {Array.from({ length: lifeMap[config.lives] }).map((_, i) => <FavoriteIcon key={i} />)}
             </Box>)}
         </Box>
 

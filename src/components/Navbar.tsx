@@ -1,10 +1,11 @@
-import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
-import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import PsychologyAltRoundedIcon from '@mui/icons-material/PsychologyAltRounded';
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
+import HelpCenterRoundedIcon from '@mui/icons-material/HelpCenterRounded';
 import SoundControll from './SoundControll.tsx';
-import { useNavigate } from "react-router-dom";
-import NavbarDrawer from "./NavbarDrawer.tsx";
-import ModeSwitch from "./ModeSwitch.tsx";
-import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import NavbarDrawer from './NavbarDrawer.tsx';
+import ModeSwitch from './ModeSwitch.tsx';
+import { useState } from 'react';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -20,18 +21,23 @@ const Navbar = () => {
 
     return (<>
         <Box flex={0}>
-            <AppBar position="static" color={'default'}>
+            <AppBar position='static' color='default'>
                 <Toolbar>
-                    <QuestionMarkRoundedIcon />
-                    <Typography onClick={() => navigator("/trivia")}
-                        variant="h6"
-                        sx={{
-                            marginLeft: 1,
-                            cursor: "pointer"
-                        }}>Trivia</Typography>
-                    <Box sx={{ flexGrow: 1, height: "100%" }} />
+                    <Box onClick={() => navigator('/trivia')}
+                        sx={{ cursor: 'pointer' }}
+                        marginLeft={1}
+                        display='flex'
+                        justifyContent='center'
+                        alignItems='center'>
+                        <PsychologyAltRoundedIcon />
+                        <Typography variant='h6' paddingLeft={1}>Trivia</Typography>
+                    </Box>
+                    <Box flexGrow={1} height='100%' />
                     <SoundControll />
                     <ModeSwitch />
+                    <IconButton>
+                        <HelpCenterRoundedIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
         </Box>

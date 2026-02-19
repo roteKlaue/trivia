@@ -12,16 +12,19 @@ export const fetchQuestions = async (
 
     const params = new URLSearchParams({
         limit: String(limit),
-        categories: category,
     });
 
     if (difficulty !== "mix") {
         params.append("difficulty", difficulty);
     }
 
+    if (category !== "all") {
+        params.append("categories", category);
+    }
+
     try {
         const { data } = await axios.get<Question[]>(
-            `https://the-trivia-api.com/api/questions?${params}`
+            `https://the-trivia-api.com/api/questions?${params}`, { timeout: 5000 }
         );
 
         return data;

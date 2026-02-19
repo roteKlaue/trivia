@@ -19,7 +19,7 @@ type SoundPlaybackStore = {
 export const useSoundPlaybackStore = create<SoundPlaybackStore>((set, get) => ({
     sfxQueue: [],
     musicQueue: [],
-    currentMusic: undefined,
+    currentMusic: void 0,
     loopMusic: true,
 
     playMusic: (src, replace = true) => {
@@ -44,7 +44,7 @@ export const useSoundPlaybackStore = create<SoundPlaybackStore>((set, get) => ({
     nextMusic: () => {
         const { musicQueue, loopMusic } = get();
         if (!musicQueue.length) {
-            set({ currentMusic: undefined });
+            set({ currentMusic: void 0 });
             return;
         }
 
@@ -58,7 +58,7 @@ export const useSoundPlaybackStore = create<SoundPlaybackStore>((set, get) => ({
 
     stopMusic: () =>
         set({
-            currentMusic: undefined,
+            currentMusic: void 0,
             musicQueue: []
         }),
 
@@ -73,7 +73,7 @@ export const useSoundPlaybackStore = create<SoundPlaybackStore>((set, get) => ({
 
     popSfx: () => {
         const { sfxQueue } = get();
-        if (!sfxQueue.length) return undefined;
+        if (!sfxQueue.length) return void 0;
 
         const [first, ...rest] = sfxQueue;
 

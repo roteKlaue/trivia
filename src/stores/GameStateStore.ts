@@ -1,6 +1,14 @@
+import { fetchQuestions } from "../functions/loadQuestions";
+import type { Difficulty } from "../types/Difficulty";
+import type { Category } from "../types/Category";
 import type { Question } from "../types/Question";
 import { shuffle } from "../functions/shuffle";
 import { create } from "zustand";
+
+export type TimerMode = "off" | "normal" | "short" | "ultra";
+export type Mode = "hardcore" | "default" | "speedrun";
+export type LifeMode = "none" | "lives" | "suddenDeath";
+export type AnswerMode = "hidden" | "shown";
 
 type QuestionState = {
     answered: boolean;
@@ -14,27 +22,39 @@ type QuestionUnion = {
     state: QuestionState;
 };
 
+export type GameConfig = {
+    timer: TimerMode;
+    lives: LifeMode;
+    answers: AnswerMode;
+    difficulty: Difficulty | "mix";
+    category: Category;
+    rounds: number;
+    mode: Mode;
+};
+
+export const durationMap: Record<TimerMode, number> = {
+    off: -1,
+    normal: 30,
+    short: 10,
+    ultra: 3,
+};
+
+export const lifeMap: Record<LifeMode, number> = {
+    none: -1,
+    lives: 3,
+    suddenDeath: 1,
+};
+
 export type GameState = {
     round: number;
     score: number;
-    rounds: number;
-    useTimer: boolean;
-    shortTimer: boolean;
-    showAnswers: boolean;
-    lives: number;
-    instaDeath: boolean;
+    currentHP: number;
+    config: GameConfig;
 
     questions: QuestionUnion[];
     currentQuestion: Question | null;
 
-    startGame: (
-        questions: Question[],
-        showAnswers: boolean,
-        useTimer: boolean,
-        shortTimer: boolean,
-        enableLives: boolean,
-        instaDeath: boolean
-    ) => void;
+    startGame: (props: GameConfig) => Promise<void>;
     nextQuestion: () => void;
     failQuestion: () => void;
     guess: (input: string) => boolean;
@@ -47,15 +67,35 @@ export type GameState = {
     stopTimer: () => void;
 };
 
+const normalizeConfig = (c: GameConfig): GameConfig => {
+    if (c.mode === "hardcore") {
+        return {
+            ...c,
+            difficulty: "hard",
+            category: "all",
+            timer: "ultra",
+            lives: "suddenDeath",
+            rounds: 50,
+        };
+    }
+
+    return c;
+};
+
 export const useGameStateStore = create<GameState>((set, get) => ({
     round: 0,
     score: 0,
-    rounds: 10,
-    useTimer: false,
-    shortTimer: false,
-    showAnswers: true,
-    lives: -1,
-    instaDeath: false,
+    currentHP: 0,
+
+    config: {
+        timer: "off",
+        lives: "none",
+        answers: "shown",
+        difficulty: "mix",
+        rounds: 10,
+        category: "general_knowledge",
+        mode: "default"
+    },
 
     questions: [],
     currentQuestion: null,
@@ -64,21 +104,26 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     timerActive: false,
     timerId: null,
 
-    startGame: (questions, showAnswers, useTimer, shortTimer, enableLives, instaDeath) => {
+    startGame: async inputConfig => {
+        const config = normalizeConfig(inputConfig);
+
+        const questions = await fetchQuestions(
+            config.difficulty,
+            config.category,
+            config.rounds
+        );
+
         if (!questions || questions.length === 0) {
             set({
                 questions: [],
-                currentQuestion: null,
-                rounds: 0,
-                round: 0,
-                score: 0,
+                config
             });
             return;
         }
 
         get().stopTimer();
 
-        const mappedQuestions: QuestionUnion[] = questions.map((q) => ({
+        const mappedQuestions: QuestionUnion[] = questions.map(q => ({
             question: q,
             state: {
                 answered: false,
@@ -91,17 +136,13 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         set({
             questions: mappedQuestions,
             round: 0,
-            rounds: mappedQuestions.length,
             score: 0,
+            currentHP: lifeMap[config.lives],
             currentQuestion: mappedQuestions[0].question,
-            showAnswers,
-            useTimer,
-            shortTimer,
-            lives: enableLives ? (instaDeath ? 1 : 3) : -1,
-            instaDeath,
+            config
         });
 
-        if (useTimer) {
+        if (config.timer !== "off") {
             get().startTimer();
         }
     },
@@ -109,34 +150,33 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     failQuestion: () => {
         get().stopTimer();
 
-        const { currentQuestion, questions, round, lives } = get();
+        const { currentQuestion, questions, round, currentHP } = get();
         if (!currentQuestion) return;
 
-        const newLives = lives !== -1 ? Math.max(0, lives - 1) : -1;
+        const newLives = currentHP !== -1 ? Math.max(0, currentHP - 1) : -1;
         const updated = questions.map((p, i) =>
-            i === round
-                ? { ...p, state: { ...p.state, answered: true, correct: false } }
-                : p
+            i !== round ? p
+                : { ...p, state: { ...p.state, answered: true, correct: false } }
         );
 
         set({
             questions: updated,
-            lives: newLives,
+            currentHP: newLives,
         });
     },
 
-    guess: (input) => {
+    guess: input => {
         get().stopTimer();
 
-        const { currentQuestion, round, lives } = get();
+        const { currentQuestion, round, currentHP } = get();
         if (!currentQuestion) return false;
 
         const matches = currentQuestion.correctAnswer === input;
-        const newLives = lives !== -1 ? (matches ? lives : Math.max(0, lives - 1)) : -1;
+        const newLives = currentHP !== -1 ? (matches ? currentHP : Math.max(0, currentHP - 1)) : -1;
 
-        set((s) => ({
+        set(s => ({
             score: s.score + (matches ? 1 : 0),
-            lives: newLives,
+            currentHP: newLives,
             questions: s.questions.map((p, i) =>
                 i === round
                     ? { ...p, state: { ...p.state, correct: matches, answered: true } }
@@ -152,7 +192,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
         set((s) => {
             const nextRound = s.round + 1;
-            const gameOverBecauseLives = s.lives === 0;
+            const gameOverBecauseLives = s.currentHP === 0;
             const reachedEnd = nextRound >= s.questions.length;
 
             if (gameOverBecauseLives || reachedEnd) {
@@ -168,8 +208,8 @@ export const useGameStateStore = create<GameState>((set, get) => ({
             };
         });
 
-        const { useTimer, timerActive } = get();
-        if (useTimer && !timerActive) {
+        const { config, timerActive } = get();
+        if (config.timer !== "off" && !timerActive) {
             get().startTimer();
         }
     },
@@ -188,11 +228,10 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     },
 
     startTimer: () => {
-        const { useTimer, shortTimer, timerActive } = get();
-        if (!useTimer) return;
-        if (timerActive) return;
+        const { config, timerActive } = get();
+        if (config.timer === "off" || timerActive) return;
 
-        const duration = shortTimer ? 10 : 30;
+        const duration = durationMap[config.timer];
 
         set({
             timerRemaining: duration,
