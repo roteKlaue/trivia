@@ -1,6 +1,6 @@
 import { Box, Button, Paper, Typography, Stack, LinearProgress } from "@mui/material";
-import { useGameStateStore } from "../stores/GameStateStore";
-import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useGameStateStore } from "../../stores/GameStateStore";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { useNavigate } from "react-router-dom";
 
 const Finish = () => {

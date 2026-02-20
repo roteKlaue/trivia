@@ -1,5 +1,5 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorderRounded';
-import { useGameStateStore, lifeMap } from '../stores/GameStateStore';
+import { useGameStateStore, lifeMap } from '../../stores/GameStateStore';
 import FavoriteIcon from '@mui/icons-material/FavoriteRounded';
 import { Box, Typography } from '@mui/material';
 

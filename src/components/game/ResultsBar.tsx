@@ -1,5 +1,3 @@
-import { useGameStateStore } from "../stores/GameStateStore";
-import QuestionSelectButton from "./QuestionSelectButton";
 import {
     ToggleButtonGroup,
     Select,
@@ -8,7 +6,9 @@ import {
     useTheme,
     Box
 } from "@mui/material";
-import type { Question } from "../types/Question";
+import { useGameStateStore } from "../../stores/GameStateStore";
+import QuestionSelectButton from "./QuestionSelectButton";
+import type { Question } from "../../types/Question";
 import type { FC } from "react";
 
 type Props = {

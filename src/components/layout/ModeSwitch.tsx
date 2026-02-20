@@ -1,6 +1,6 @@
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useThemeStore } from '../stores/ThemeStore';
+import { useThemeStore } from '../../stores/ThemeStore';
 import { IconButton, Tooltip } from '@mui/material';
 
 const ModeSwitch = () => {

@@ -1,5 +1,5 @@
-import { useSoundSettingsStore } from "../stores/SoundSettingsStore";
-import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
+import { useSoundSettingsStore } from "../../stores/SoundSettingsStore";
+import { useSoundPlaybackStore } from "../../stores/SoundPlaybackStore";
 import { useEffect, useRef } from "react";
 
 const DUCK_MULTIPLIER = 0.35;

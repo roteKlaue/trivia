@@ -7,8 +7,8 @@ import WhatshotIcon from '@mui/icons-material/WhatshotRounded';
 import FavoriteIcon from '@mui/icons-material/FavoriteRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, ToggleButton, Tooltip } from "@mui/material";
-import { useThemeStore } from "../stores/ThemeStore";
-import { FireComponent } from './FireComponent';
+import { useThemeStore } from "../../stores/ThemeStore";
+import { FireComponent } from '../FireComponent';
 import { useEffect, type FC } from "react";
 import HardcoreIcon from './Skull';
 

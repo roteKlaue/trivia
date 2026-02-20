@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select, Tooltip } from "@mui/material";
-import { categories, type Category } from "../types/Category";
+import { categories, type Category } from "../../types/Category";
 import type { FC } from "react";
 
 type Props = {

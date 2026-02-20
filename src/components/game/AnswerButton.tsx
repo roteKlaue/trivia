@@ -1,7 +1,7 @@
+import { useGameStateStore } from "../../stores/GameStateStore";
+import type { Question } from "../../types/Question";
 import { Button } from "@mui/material";
-import { useGameStateStore } from "../stores/GameStateStore";
 import type { FC } from "react";
-import type { Question } from "../types/Question";
 
 type AnswerButtonProps = {
     text: string;

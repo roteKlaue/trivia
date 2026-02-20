@@ -1,6 +1,6 @@
 import { Box, type SxProps, type Theme } from "@mui/material";
-import { useEffect, useRef, type FC } from "react";
 import { useThemeStore } from "../stores/ThemeStore";
+import { useEffect, useRef, type FC } from "react";
 
 export const FireCanvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

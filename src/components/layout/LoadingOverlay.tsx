@@ -1,11 +1,8 @@
 import { Backdrop, CircularProgress, Typography, Box } from '@mui/material';
+import { useLoadingStore } from '../../stores/LoadingStore';
 
-type Props = {
-    open: boolean;
-    text?: string;
-};
-
-const LoadingOverlay = ({ open, text = 'Loading...' }: Props) => {
+const LoadingOverlay = () => {
+    const { open, text } = useLoadingStore();
     if (!open) return null;
 
     return (

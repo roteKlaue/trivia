@@ -7,7 +7,7 @@ import {
     MenuItem,
     useMediaQuery,
 } from '@mui/material';
-import type { Difficulty } from '../types/Difficulty';
+import type { Difficulty } from '../../types/Difficulty';
 import type { FC } from 'react';
 
 const difficulties: (Difficulty | 'mix')[] = ['easy', 'medium', 'hard', 'mix'];

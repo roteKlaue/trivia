@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import MainMenu from "./components/MainMenu";
-import Credits from "./components/Credits";
-import Finish from "./components/Finish";
-import Layout from "./components/Layout";
-import Game from "./components/Game";
+import MainMenu from "./components/main/MainMenu";
+import Credits from "./components/credits/Credits";
+import Finish from "./components/end/Finish";
+import Layout from "./components/layout/Layout";
+import Game from "./components/game/Game";
 
 const App = () => {
     return (<>

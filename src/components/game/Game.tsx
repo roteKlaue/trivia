@@ -1,18 +1,19 @@
-import successSfx from "../assets/soundeffects/universfield-new-notification-07-210334.mp3";
-import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
-import errorSfx from "../assets/soundeffects/universfield-error-08-206492.mp3";
-import { useGameStateStore, durationMap } from "../stores/GameStateStore";
-import { useSoundPlaybackStore } from "../stores/SoundPlaybackStore";
-import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import type { Question } from '../types/Question';
+import successSfx from "../../assets/soundeffects/universfield-new-notification-07-210334.mp3";
+import errorSfx from "../../assets/soundeffects/universfield-error-08-206492.mp3";
+import { useSoundPlaybackStore } from "../../stores/SoundPlaybackStore";
+import { Box, Button, Paper, Typography } from "@mui/material";
+import { useGameStateStore } from "../../stores/GameStateStore";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import type { Question } from '../../types/Question';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AnswerButton from "./AnswerButton";
-import ResultsBar from "./ResultsBar";
 import LivesDisplay from "./LivesDisplay";
+import TimerDisplay from "./TimerDisplay";
+import ResultsBar from "./ResultsBar";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, timerRemaining, config, findQuestionIndex } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, config, findQuestionIndex } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
@@ -94,33 +95,16 @@ const Game = () => {
         display: "flex",
         flexDirection: "column"
     }}>
-        <Box
-            sx={{
-                width: "100%",
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
-                alignItems: "center",
-                rowGap: 1,
-                columnGap: 2
-            }}
-        >
-            <Typography>
-                Round: {round + 1} of {config.rounds}
-            </Typography>
-
-            {config.timer !== "off" && (
-                <Box display="flex" alignItems="center" gap={2}>
-                    <Typography>
-                        Time left: {timerRemaining}s
-                    </Typography>
-
-                    <CircularProgress
-                        variant="determinate"
-                        value={100 - (timerRemaining / (durationMap[config.timer]) * 100)}
-                    />
-                </Box>
-            )}
-
+        <Box sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            alignItems: "center",
+            rowGap: 1,
+            columnGap: 2
+        }}>
+            <Typography>Round: {round + 1} of {config.rounds}</Typography>
+            <TimerDisplay />
             <LivesDisplay />
         </Box>
 

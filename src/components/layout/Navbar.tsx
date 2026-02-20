@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer.tsx';
 import ModeSwitch from './ModeSwitch.tsx';
 import { useState } from 'react';
-import { FireBackground } from './FireComponent.tsx';
+import { FireBackground } from '../FireComponent.tsx';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);

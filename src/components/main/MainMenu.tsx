@@ -1,18 +1,19 @@
-import { useGameStateStore, type GameConfig } from '../stores/GameStateStore';
+import { useGameStateStore, type GameConfig } from '../../stores/GameStateStore';
 import { Box, Button, Paper, Typography } from '@mui/material';
-import { useDocumentTitle } from '../hooks/useDocumentTitle';
-import type { Difficulty } from '../types/Difficulty';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { useLoadingStore } from '../../stores/LoadingStore';
+import type { Difficulty } from '../../types/Difficulty';
 import DifficultySelector from './DifficultySelector';
+import { type Category } from '../../types/Category';
 import CategorySelector from './CategorySelector';
-import { type Category } from '../types/Category';
 import { useNavigate } from 'react-router-dom';
-import LoadingOverlay from './LoadingOverlay';
 import AmountSlider from './AmountSlider';
 import { useSnackbar } from 'notistack';
 import ModeToggles from './ModeToggles';
 import { useState } from 'react';
 
 const MainMenu = () => {
+    const { setOpen, setText, open } = useLoadingStore();
     const startGame = useGameStateStore(s => s.startGame);
     const config = useGameStateStore(s => s.config);
     const [difficulty, setDifficulty] = useState<Difficulty | 'mix'>(config.difficulty);
@@ -29,15 +30,15 @@ const MainMenu = () => {
     ].filter(Boolean) as string[]);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [amount, setAmount] = useState<number>(config.rounds === 50 ? 30 : config.rounds);
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     useDocumentTitle('Trivia');
 
     const handleSubmit = async () => {
-        if (loading) return;
+        if (open) return;
         closeSnackbar();
 
-        setLoading(true);
+        setText("Loading Questions...");
+        setOpen(true);
 
         const config: GameConfig = {
             difficulty,
@@ -68,7 +69,7 @@ const MainMenu = () => {
         } catch {
             enqueueSnackbar('Error retrieving questions!', { variant: 'error' });
         } finally {
-            setLoading(false);
+            setOpen(false);
         }
     };
 
@@ -96,11 +97,6 @@ const MainMenu = () => {
                 </Box>
             </Paper>
         </Box>
-
-        <LoadingOverlay
-            open={loading}
-            text='Preparing questions...'
-        />
     </>);
 };
 

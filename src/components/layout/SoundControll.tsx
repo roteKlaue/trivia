@@ -1,9 +1,9 @@
-import { useSoundSettingsStore } from "../stores/SoundSettingsStore";
+import { useSoundSettingsStore } from "../../stores/SoundSettingsStore";
+import { Box, IconButton, Slider, Tooltip } from "@mui/material";
 import VolumeDown from "@mui/icons-material/VolumeDownRounded";
 import VolumeMute from "@mui/icons-material/VolumeMuteRounded";
 import VolumeOff from "@mui/icons-material/VolumeOffRounded";
 import VolumeUp from "@mui/icons-material/VolumeUpRounded";
-import { Box, IconButton, Slider, Tooltip } from "@mui/material";
 
 const SoundControll = () => {
     const { volume, setVolume, toggleMute, isMuted } = useSoundSettingsStore();
