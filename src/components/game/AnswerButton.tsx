@@ -1,7 +1,7 @@
-import { useGameStateStore } from "../../stores/GameStateStore";
-import type { Question } from "../../types/Question";
-import { Button } from "@mui/material";
-import type { FC } from "react";
+import { useGameStateStore } from '../../stores/GameStateStore';
+import type { Question } from '../../types/Question';
+import Button from '@mui/material/Button';
+import type { FC } from 'react';
 
 type AnswerButtonProps = {
     text: string;
@@ -23,31 +23,27 @@ const AnswerButton: FC<AnswerButtonProps> = ({ text, index, onSelect, question }
         answered &&
         qState.state.cachedAnswers[index] === qState.question.correctAnswer;
 
-    let color: "primary" | "success" | "error" = "primary";
+    let color: 'primary' | 'success' | 'error' = 'primary';
 
     if (selected && answered) {
-        color = correct ? "success" : "error";
+        color = correct ? 'success' : 'error';
     }
 
-    if (correct && config.answers === "shown") {
-        color = "success";
+    if (correct && config.answers === 'shown') {
+        color = 'success';
     }
 
-    return (
-        <Button
-            sx={{
-                height: "100%",
-                fontSize: "clamp(0.9rem, 2.5vw, 1.8rem)",
-                px: 2,
-                textWrap: "balance"
-            }}
-            variant={(selected || (correct && config.answers === "shown")) ? "contained" : "outlined"}
-            color={color}
-            onClick={() => onSelect(index)}
-        >
-            {text}
-        </Button>
-    );
+    return (<Button color={color}
+        sx={{
+            height: '100%',
+            fontSize: 'clamp(0.9rem, 2.5vw, 1.8rem)',
+            px: 2,
+            textWrap: 'balance'
+        }}
+        variant={(selected || (correct && config.answers === 'shown')) ? 'contained' : 'outlined'}
+        onClick={() => onSelect(index)}>
+        {text}
+    </Button>);
 };
 
 export default AnswerButton;

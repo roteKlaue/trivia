@@ -1,5 +1,5 @@
-import type { Difficulty } from "./Difficulty";
-import type { Category } from "./Category";
+import type { Difficulty } from './Difficulty';
+import type { Category } from './Category';
 
 export type Question = {
     readonly id: string;

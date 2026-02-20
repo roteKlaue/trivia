@@ -1,6 +1,11 @@
-import { Divider, Drawer, List, ListItemButton, ListItemIcon, Typography } from '@mui/material';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
 import ListLink from './ListLink.tsx';
 import { type FC } from 'react';
 

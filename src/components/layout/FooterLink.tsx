@@ -1,44 +1,44 @@
-import { Box, Button, Link as MuiLink, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { type FC, useState } from "react";
+import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
+import { type FC, useState } from 'react';
+import Button from '@mui/material/Button';
+import MuiLink from '@mui/material/Link';
+import Box from '@mui/material/Box';
 
 const FooterLink: FC<{ text: string, to: string }> = ({ to, text }) => {
     const [hover, setHover] = useState(false);
     const nav = useNavigate();
 
-    return (<Button color={"inherit"} 
+    return (<Button color={'inherit'}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}>
         <MuiLink
             onClick={() => nav(to)}
-            component="span"
+            component='span'
 
             style={{
-                position: "relative",
-                paddingBottom: "2px",
-                textDecoration: "none",
-                color: "inherit"
+                position: 'relative',
+                paddingBottom: '2px',
+                textDecoration: 'none',
+                color: 'inherit'
             }}>
-
             <span>
-                <Typography variant="body2" component="span">
+                <Typography variant='body2' component='span'>
                     {text.toUpperCase()}
                 </Typography>
 
-                <Box
-                    component="span"
+                <Box component='span'
                     sx={{
-                        position: "absolute",
+                        position: 'absolute',
                         bottom: 0,
                         left: 0,
                         height: 2,
-                        width: "100%",
-                        bgcolor: "currentColor",
-                        transform: hover ? "scaleX(1)" : "scaleX(0)",
-                        transformOrigin: "left",
-                        transition: "transform 0.5s ease-in-out",
-                    }}
-                />
+                        width: '100%',
+                        bgcolor: 'currentColor',
+                        transform: hover ? 'scaleX(1)' : 'scaleX(0)',
+                        transformOrigin: 'left',
+                        transition: 'transform 0.5s ease-in-out',
+                    }} />
             </span>
         </MuiLink>
     </Button>);

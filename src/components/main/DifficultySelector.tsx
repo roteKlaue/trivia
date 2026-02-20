@@ -1,13 +1,11 @@
-import {
-    FormControl,
-    ToggleButton,
-    ToggleButtonGroup,
-    Typography,
-    Select,
-    MenuItem,
-    useMediaQuery,
-} from '@mui/material';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import type { Difficulty } from '../../types/Difficulty';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import ToggleButton from '@mui/material/ToggleButton';
+import FormControl from '@mui/material/FormControl';
+import Typography from '@mui/material/Typography';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import type { FC } from 'react';
 
 const difficulties: (Difficulty | 'mix')[] = ['easy', 'medium', 'hard', 'mix'];

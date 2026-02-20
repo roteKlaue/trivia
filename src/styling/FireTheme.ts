@@ -1,15 +1,15 @@
-import { createTheme } from "@mui/material/styles";
-import { FIRE } from "./colors/fire";
+import { createTheme } from '@mui/material/styles';
+import { FIRE } from './colors/fire';
 
 export const FireDarkTheme = createTheme({
     palette: {
-        mode: "dark",
+        mode: 'dark',
 
         primary: {
             main: FIRE.orange.main,
             light: FIRE.orange.light,
             dark: FIRE.orange.dark,
-            contrastText: "#000",
+            contrastText: '#000',
         },
 
         secondary: {
@@ -34,8 +34,8 @@ export const FireDarkTheme = createTheme({
     shape: { borderRadius: 14 },
 
     typography: {
-        fontFamily: `"Inter", "Roboto", sans-serif`,
-        button: { textTransform: "none", fontWeight: 600 },
+        fontFamily: `'Inter', 'Roboto', sans-serif`,
+        button: { textTransform: 'none', fontWeight: 600 },
     },
 
     components: {
@@ -44,23 +44,23 @@ export const FireDarkTheme = createTheme({
                 root: {
                     borderRadius: 14,
                     fontWeight: 600,
-                    textTransform: "none",
+                    textTransform: 'none',
                 },
 
                 contained: ({ theme, ownerState }) => {
                     const key =
                         ownerState.color &&
-                            ownerState.color !== "inherit" &&
+                            ownerState.color !== 'inherit' &&
                             theme.palette[ownerState.color]
                             ? ownerState.color
-                            : "primary";
+                            : 'primary';
 
                     const p = theme.palette[key];
 
                     return {
                         background: `linear-gradient(135deg, ${p.light}, ${p.main})`,
                         boxShadow: `0 0 12px ${p.main}66`,
-                        "&:hover": {
+                        '&:hover': {
                             boxShadow: `0 0 20px ${p.main}aa`,
                         },
                     };
@@ -69,14 +69,14 @@ export const FireDarkTheme = createTheme({
                 outlined: ({ theme }) => ({
                     borderWidth: 2,
                     borderColor: theme.palette.primary.main,
-                    "&:hover": {
+                    '&:hover': {
                         borderWidth: 2,
                         backgroundColor: `${theme.palette.primary.main}22`,
                     },
                 }),
 
                 text: ({ theme }) => ({
-                    "&:hover": {
+                    '&:hover': {
                         backgroundColor: `${theme.palette.primary.main}22`,
                     },
                 }),
@@ -95,13 +95,13 @@ export const FireDarkTheme = createTheme({
 
 export const FireLightTheme = createTheme({
     palette: {
-        mode: "light",
+        mode: 'light',
 
         primary: {
             main: FIRE.orange.main,
             light: FIRE.orange.lighter,
             dark: FIRE.orange.darker,
-            contrastText: "#fff",
+            contrastText: '#fff',
         },
 
         secondary: {
@@ -122,8 +122,8 @@ export const FireLightTheme = createTheme({
     shape: { borderRadius: 14 },
 
     typography: {
-        fontFamily: `"Inter", "Roboto", sans-serif`,
-        button: { textTransform: "none", fontWeight: 600 },
+        fontFamily: `'Inter', 'Roboto', sans-serif`,
+        button: { textTransform: 'none', fontWeight: 600 },
     },
 
     components: {
@@ -132,13 +132,13 @@ export const FireLightTheme = createTheme({
                 root: {
                     borderRadius: 14,
                     fontWeight: 600,
-                    textTransform: "none",
+                    textTransform: 'none',
                 },
 
                 contained: ({ theme, ownerState }) => {
                     const color = ownerState.color;
 
-                    if (!color || color === "inherit" || !theme.palette[color]) {
+                    if (!color || color === 'inherit' || !theme.palette[color]) {
                         const p = theme.palette.primary;
 
                         return {
@@ -151,7 +151,7 @@ export const FireLightTheme = createTheme({
                     return {
                         background: `linear-gradient(135deg, ${p.light}, ${p.main})`,
                         boxShadow: `0 0 12px ${FIRE.effects.glowMedium}`,
-                        "&:hover": {
+                        '&:hover': {
                             boxShadow: `0 0 20px ${FIRE.effects.glowStrong}`,
                         },
                     };
@@ -160,14 +160,14 @@ export const FireLightTheme = createTheme({
                 outlined: ({ theme }) => ({
                     borderWidth: 2,
                     borderColor: theme.palette.primary.main,
-                    "&:hover": {
+                    '&:hover': {
                         borderWidth: 2,
                         backgroundColor: `${theme.palette.primary.main}22`,
                     },
                 }),
 
                 text: ({ theme }) => ({
-                    "&:hover": {
+                    '&:hover': {
                         backgroundColor: `${theme.palette.primary.main}22`,
                     },
                 }),
@@ -183,6 +183,3 @@ export const FireLightTheme = createTheme({
         },
     },
 });
-
-
-

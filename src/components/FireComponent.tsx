@@ -1,6 +1,7 @@
-import { Box, type SxProps, type Theme } from "@mui/material";
-import { useThemeStore } from "../stores/ThemeStore";
-import { useEffect, useRef, type FC } from "react";
+import type { SxProps, Theme } from '@mui/material/styles';
+import { useThemeStore } from '../stores/ThemeStore';
+import { useEffect, useRef, type FC } from 'react';
+import Box from '@mui/material/Box';
 
 export const FireCanvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -9,7 +10,7 @@ export const FireCanvas: React.FC = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
         ctx.translate(0, 16);
@@ -35,7 +36,7 @@ export const FireCanvas: React.FC = () => {
 
                 ctx.clearRect(0, 0, 16, 16);
 
-                ctx.strokeStyle = "#d14234";
+                ctx.strokeStyle = '#d14234';
                 let i = 0;
 
                 for (let x = 4; x < 12; x++) {
@@ -48,7 +49,7 @@ export const FireCanvas: React.FC = () => {
                     ctx.stroke();
                 }
 
-                ctx.strokeStyle = "#f2a55f";
+                ctx.strokeStyle = '#f2a55f';
                 let j = 1;
 
                 for (let x = 5; x < 11; x++) {
@@ -63,7 +64,7 @@ export const FireCanvas: React.FC = () => {
                     ctx.stroke();
                 }
 
-                ctx.strokeStyle = "#e8dec5";
+                ctx.strokeStyle = '#e8dec5';
                 let k = 3;
 
                 for (let x = 7; x < 9; x++) {
@@ -92,7 +93,7 @@ export const FireCanvas: React.FC = () => {
             ref={canvasRef}
             width={16}
             height={16}
-            style={{ imageRendering: "pixelated", transform: "rotate(180deg)" }}
+            style={{ imageRendering: 'pixelated', transform: 'rotate(180deg)' }}
         />
     );
 };
@@ -114,17 +115,17 @@ export const FireComponent: FC<FireComponentProps> = ({
     sx
 }) => {
     const { activeTheme } = useThemeStore();
-    if (!position || activeTheme !== "fire") return null;
+    if (!position || activeTheme !== 'fire') return null;
 
     const sx1: SxProps<Theme> = {
-        position: "absolute",
+        position: 'absolute',
         left: position.x,
         top: position.y,
         width: 16,
         height: 16,
         transform: `scale(${scale})`,
-        transformOrigin: "bottom center",
-        pointerEvents: "none",
+        transformOrigin: 'bottom center',
+        pointerEvents: 'none',
     };
 
     return (<Box sx={sx ?? sx1}>
@@ -146,16 +147,16 @@ export const FireBackground: FC<FireBackgroundProps> = ({
     sx,
 }) => {
     const { activeTheme } = useThemeStore();
-    if (activeTheme !== "fire") return null;
+    if (activeTheme !== 'fire') return null;
     return (
         <Box
             sx={{
-                position: "absolute",
+                position: 'absolute',
                 width,
                 height,
                 transform: `scale(${scale})`,
-                transformOrigin: "center center",
-                pointerEvents: "none",
+                transformOrigin: 'center center',
+                pointerEvents: 'none',
                 zIndex: 0,
                 ...sx,
             }}

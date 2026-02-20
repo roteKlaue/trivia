@@ -1,5 +1,8 @@
-import { Box, Slider, Tooltip, Typography } from "@mui/material";
-import type { FC } from "react";
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Slider from '@mui/material/Slider';
+import Box from '@mui/material/Box';
+import type { FC } from 'react';
 
 type Props = {
     hardcore: boolean;

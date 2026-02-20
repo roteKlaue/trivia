@@ -6,7 +6,7 @@ import { FireComponent } from '../FireComponent.tsx';
 import LoadingOverlay from './LoadingOverlay.tsx';
 import SoundProvider from './SoundProvider.tsx';
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import Navbar from './Navbar.tsx';
 import Footer from './Footer.tsx';
 import { useEffect } from 'react';

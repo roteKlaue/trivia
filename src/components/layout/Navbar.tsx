@@ -1,12 +1,16 @@
 import PsychologyAltRoundedIcon from '@mui/icons-material/PsychologyAltRounded';
-import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import HelpCenterRoundedIcon from '@mui/icons-material/HelpCenterRounded';
+import { FireBackground } from '../FireComponent.tsx';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import SoundControll from './SoundControll.tsx';
 import { useNavigate } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer.tsx';
+import Toolbar from '@mui/material/Toolbar';
 import ModeSwitch from './ModeSwitch.tsx';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
 import { useState } from 'react';
-import { FireBackground } from '../FireComponent.tsx';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -28,7 +32,7 @@ const Navbar = () => {
                         sx={{ cursor: 'pointer' }}
                         marginLeft={1}
                         display='flex'
-                        position="relative"
+                        position='relative'
                         justifyContent='center'
                         alignItems='center'>
                         <FireBackground

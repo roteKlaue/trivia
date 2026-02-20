@@ -1,15 +1,18 @@
 import { useGameStateStore, type GameConfig } from '../../stores/GameStateStore';
-import { Box, Button, Paper, Typography } from '@mui/material';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useLoadingStore } from '../../stores/LoadingStore';
 import type { Difficulty } from '../../types/Difficulty';
 import DifficultySelector from './DifficultySelector';
 import { type Category } from '../../types/Category';
 import CategorySelector from './CategorySelector';
+import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
 import AmountSlider from './AmountSlider';
 import { useSnackbar } from 'notistack';
 import ModeToggles from './ModeToggles';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import { useState } from 'react';
 
 const MainMenu = () => {
@@ -37,7 +40,7 @@ const MainMenu = () => {
         if (open) return;
         closeSnackbar();
 
-        setText("Loading Questions...");
+        setText('Loading Questions...');
         setOpen(true);
 
         const config: GameConfig = {
@@ -79,7 +82,7 @@ const MainMenu = () => {
         <Box display='flex' justifyContent='center'>
             <Paper elevation={4} sx={{
                 p: 3,
-                width: "100%",
+                width: '100%',
                 maxWidth: 450
             }}>
                 <Box sx={{

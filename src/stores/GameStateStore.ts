@@ -1,14 +1,14 @@
-import { fetchQuestions } from "../functions/loadQuestions";
-import type { Difficulty } from "../types/Difficulty";
-import type { Category } from "../types/Category";
-import type { Question } from "../types/Question";
-import { shuffle } from "../functions/shuffle";
-import { create } from "zustand";
+import { fetchQuestions } from '../functions/loadQuestions';
+import type { Difficulty } from '../types/Difficulty';
+import type { Category } from '../types/Category';
+import type { Question } from '../types/Question';
+import { shuffle } from '../functions/shuffle';
+import { create } from 'zustand';
 
-export type TimerMode = "off" | "normal" | "short" | "ultra";
-export type Mode = "hardcore" | "default" | "speedrun";
-export type LifeMode = "none" | "lives" | "suddenDeath";
-export type AnswerMode = "hidden" | "shown";
+export type TimerMode = 'off' | 'normal' | 'short' | 'ultra';
+export type LifeMode = 'none' | 'lives' | 'suddenDeath';
+export type Mode = 'hardcore' | 'default' | 'speedrun';
+export type AnswerMode = 'hidden' | 'shown';
 
 type QuestionState = {
     answered: boolean;
@@ -26,7 +26,7 @@ export type GameConfig = {
     timer: TimerMode;
     lives: LifeMode;
     answers: AnswerMode;
-    difficulty: Difficulty | "mix";
+    difficulty: Difficulty | 'mix';
     category: Category;
     rounds: number;
     mode: Mode;
@@ -69,15 +69,15 @@ export type GameState = {
 };
 
 const normalizeConfig = (c: GameConfig): GameConfig => {
-    if (c.mode === "hardcore") {
+    if (c.mode === 'hardcore') {
         return {
             ...c,
-            difficulty: "hard",
-            category: "all",
-            timer: "ultra",
-            lives: "suddenDeath",
+            difficulty: 'hard',
+            category: 'all',
+            timer: 'ultra',
+            lives: 'suddenDeath',
             rounds: 50,
-            answers: "hidden"
+            answers: 'hidden'
         };
     }
 
@@ -90,13 +90,13 @@ export const useGameStateStore = create<GameState>((set, get) => ({
     currentHP: 0,
 
     config: {
-        timer: "off",
-        lives: "none",
-        answers: "shown",
-        difficulty: "mix",
+        timer: 'off',
+        lives: 'none',
+        answers: 'shown',
+        difficulty: 'mix',
         rounds: 10,
-        category: "general_knowledge",
-        mode: "default"
+        category: 'general_knowledge',
+        mode: 'default'
     },
 
     questions: [],
@@ -144,7 +144,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
             config
         });
 
-        if (config.timer !== "off") {
+        if (config.timer !== 'off') {
             get().startTimer();
         }
     },
@@ -211,7 +211,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
         });
 
         const { config, timerActive } = get();
-        if (config.timer !== "off" && !timerActive) {
+        if (config.timer !== 'off' && !timerActive) {
             get().startTimer();
         }
     },
@@ -231,7 +231,7 @@ export const useGameStateStore = create<GameState>((set, get) => ({
 
     startTimer: () => {
         const { config, timerActive } = get();
-        if (config.timer === "off" || timerActive) return;
+        if (config.timer === 'off' || timerActive) return;
 
         const duration = durationMap[config.timer];
 

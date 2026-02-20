@@ -1,9 +1,12 @@
-import { useSoundSettingsStore } from "../../stores/SoundSettingsStore";
-import { Box, IconButton, Slider, Tooltip } from "@mui/material";
-import VolumeDown from "@mui/icons-material/VolumeDownRounded";
-import VolumeMute from "@mui/icons-material/VolumeMuteRounded";
-import VolumeOff from "@mui/icons-material/VolumeOffRounded";
-import VolumeUp from "@mui/icons-material/VolumeUpRounded";
+import { useSoundSettingsStore } from '../../stores/SoundSettingsStore';
+import VolumeDown from '@mui/icons-material/VolumeDownRounded';
+import VolumeMute from '@mui/icons-material/VolumeMuteRounded';
+import VolumeOff from '@mui/icons-material/VolumeOffRounded';
+import VolumeUp from '@mui/icons-material/VolumeUpRounded';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Slider from '@mui/material/Slider';
+import Box from '@mui/material/Box';
 
 const SoundControll = () => {
     const { volume, setVolume, toggleMute, isMuted } = useSoundSettingsStore();
@@ -14,43 +17,41 @@ const SoundControll = () => {
     };
 
     const getIcon = () => {
-        if (isMuted || volume === 0) return <VolumeOff />;
-        if (volume < 30) return <VolumeMute />;
-        if (volume < 70) return <VolumeDown />;
-        return <VolumeUp />;
+        if (isMuted || volume === 0) return (<VolumeOff />);
+        if (volume < 30) return (<VolumeMute />);
+        if (volume < 70) return (<VolumeDown />);
+        return (<VolumeUp />);
     };
 
-    return (<Box
-        display="flex"
-        alignItems="center"
+    return (<Box display='flex'
+        alignItems='center'
         sx={{
             gap: 1,
-            "& .volume-slider": {
+            '& .volume-slider': {
                 width: 0,
-                transition: "width 180ms ease",
+                transition: 'width 180ms ease',
             },
-            "&:hover .volume-slider": {
+            '&:hover .volume-slider': {
                 width: 120,
             },
-            "& .MuiSlider-thumb": {
+            '& .MuiSlider-thumb': {
                 opacity: 0,
-                transition: "opacity 120ms ease",
+                transition: 'opacity 120ms ease',
             },
-            "&:hover .MuiSlider-thumb": {
+            '&:hover .MuiSlider-thumb': {
                 opacity: 1,
             },
-        }}
-    >
+        }}>
         <Slider
-            className="volume-slider"
+            className='volume-slider'
             value={isMuted ? 0 : volume}
             min={0}
             max={100}
             onChange={handleSlider}
-            size="small"
+            size='small'
         />
 
-        <Tooltip title={(isMuted || volume == 0) ? "Unmute" : "Mute"} arrow>
+        <Tooltip title={(isMuted || volume == 0) ? 'Unmute' : 'Mute'} arrow>
             <IconButton onClick={() => {
                 if (volume === 0 && isMuted) {
                     toggleMute();

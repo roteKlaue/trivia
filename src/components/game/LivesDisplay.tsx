@@ -1,7 +1,8 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorderRounded';
 import { useGameStateStore, lifeMap } from '../../stores/GameStateStore';
 import FavoriteIcon from '@mui/icons-material/FavoriteRounded';
-import { Box, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const LivesDisplay = () => {
     const { config, currentHP } = useGameStateStore();

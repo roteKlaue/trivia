@@ -1,68 +1,74 @@
-import { Box, Button, Paper, Typography, Stack, LinearProgress } from "@mui/material";
-import { useGameStateStore } from "../../stores/GameStateStore";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
-import { useNavigate } from "react-router-dom";
+import { useGameStateStore } from '../../stores/GameStateStore';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import { capitalize } from '@mui/material/utils';
+import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Stat from './Stat';
 
 const Finish = () => {
+    const { config, score, currentHP } = useGameStateStore();
     const navigate = useNavigate();
-    const { config, score } = useGameStateStore();
 
-    const percent = Math.round((score / Math.max(config.rounds, 1)) * 100);
-    useDocumentTitle(`Trivia – ${percent}% (${score}/${config.rounds})`);
+    const total = config.rounds;
+    const percent = Math.round((score / Math.max(total, 1)) * 100);
 
-    const message =
-        percent === 100 ? "Perfect run!" :
-            percent >= 75 ? "Great job!" :
-                percent >= 50 ? "Nice!" :
-                    "Give it another shot!";
+    useDocumentTitle(`Trivia - ${percent}% (${score}/${total})`);
 
-    const handleRestart = () => {
-        navigate("/trivia");
-    };
+    const wrong = total - score;
+    const accuracy = percent;
 
-    return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="70vh"
-        >
-            <Paper elevation={6} sx={{ p: 5, width: 420 }}>
-                <Stack spacing={3} alignItems="center">
-                    <Typography variant="h4">
-                        Quiz Finished
-                    </Typography>
+    const message = (() => {
+        if (percent === 100) return 'Flawless victory 🏆';
+        if (percent >= 90) return 'Outstanding!';
+        if (percent >= 75) return 'Great job!';
+        if (percent >= 50) return 'Solid run!';
+        return 'Give it another shot!';
+    })();
 
-                    <Typography variant="h6">
-                        {message}
-                    </Typography>
+    const configLabel = [
+        config.mode,
+        config.difficulty,
+        config.timer !== 'off' && `${config.timer} timer`,
+        config.lives !== 'none' && `${currentHP} lives left`,
+    ].filter(Boolean).map(e => capitalize(e as string)).join(' • ');
 
-                    <Typography variant="h5">
-                        {score} / {config.rounds}
-                    </Typography>
+    return (<Box display='flex'
+        justifyContent='center'
+        alignItems='center'
+        minHeight='70vh'>
+        <Paper elevation={6} sx={{ p: 5, width: 440 }}>
+            <Stack spacing={3} alignItems='center'>
+                <Typography variant='h4'>Results</Typography>
+                <Typography variant='subtitle2' color='text.secondary'>{configLabel}</Typography>
+                <Typography variant='h3' fontWeight={700}>{percent}%</Typography>
 
-                    <LinearProgress
-                        variant="determinate"
-                        value={percent}
-                        sx={{ width: "100%", height: 10, borderRadius: 5 }}
-                    />
+                <LinearProgress value={percent}
+                    variant='determinate'
+                    color={percent >= 75 ? 'success' : percent >= 50 ? 'warning' : 'error'}
+                    sx={{ width: '100%', height: 12, borderRadius: 6 }}
+                />
 
-                    <Typography color="text.secondary">
-                        {percent}% Correct
-                    </Typography>
+                <Stack direction='row' spacing={4}>
+                    <Stat label='Correct' value={score} />
+                    <Stat label='Wrong' value={wrong} />
+                    <Stat label='Accuracy' value={`${accuracy}%`} />
+                    {currentHP !== -1 && <Stat label='Lives' value={currentHP} />}
+                </Stack>
 
-                    <Button
-                        variant="contained"
-                        size="large"
-                        fullWidth
-                        onClick={handleRestart}
-                    >
+                <Typography variant='h6'>{message}</Typography>
+                <Stack spacing={2} width='100%'>
+                    <Button variant='contained' size='large' onClick={() => navigate('/trivia')}>
                         Play Again
                     </Button>
                 </Stack>
-            </Paper>
-        </Box>
-    );
+            </Stack>
+        </Paper>
+    </Box>);
 };
 
 export default Finish;

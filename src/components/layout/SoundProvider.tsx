@@ -1,6 +1,6 @@
-import { useSoundSettingsStore } from "../../stores/SoundSettingsStore";
-import { useSoundPlaybackStore } from "../../stores/SoundPlaybackStore";
-import { useEffect, useRef } from "react";
+import { useSoundSettingsStore } from '../../stores/SoundSettingsStore';
+import { useSoundPlaybackStore } from '../../stores/SoundPlaybackStore';
+import { useEffect, useRef } from 'react';
 
 const DUCK_MULTIPLIER = 0.35;
 
@@ -19,7 +19,7 @@ const SoundProvider = () => {
         if (audio) return audio;
 
         audio = new Audio(src);
-        audio.preload = "auto";
+        audio.preload = 'auto';
         cacheRef.current.set(src, audio);
         return audio;
     };
@@ -56,8 +56,8 @@ const SoundProvider = () => {
             nextMusic();
         };
 
-        musicRef.current.addEventListener("ended", onEnded);
-        return () => musicRef.current?.removeEventListener("ended", onEnded);
+        musicRef.current.addEventListener('ended', onEnded);
+        return () => musicRef.current?.removeEventListener('ended', onEnded);
     }, [currentMusic, nextMusic]);
 
     useEffect(() => {
@@ -84,7 +84,7 @@ const SoundProvider = () => {
         clearSfxChannel();
     }, [sfxQueue, baseVolume, clearSfxChannel]);
 
-    return <audio ref={musicRef} />;
+    return (<audio ref={musicRef} />);
 };
 
 export default SoundProvider;

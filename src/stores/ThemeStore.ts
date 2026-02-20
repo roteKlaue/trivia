@@ -1,9 +1,9 @@
-import { FireDarkTheme, FireLightTheme } from "../styling/FireTheme.ts";
-import { DarkTheme, LightTheme } from "../styling/DefaultTheme.ts";
-import type { Theme } from "@mui/material";
-import { create } from "zustand";
+import { FireDarkTheme, FireLightTheme } from '../styling/FireTheme.ts';
+import { DarkTheme, LightTheme } from '../styling/DefaultTheme.ts';
+import type { Theme } from '@mui/material/styles';
+import { create } from 'zustand';
 
-type Mode = "light" | "dark";
+type Mode = 'light' | 'dark';
 
 type ThemeVariant = {
     light: Theme;
@@ -23,10 +23,10 @@ type ThemeState = {
     getCurrentTheme: () => Theme;
 };
 
-const STORAGE_KEY = "app-theme-state";
+const STORAGE_KEY = 'app-theme-state';
 
 const load = () => {
-    if (typeof window === "undefined") return null;
+    if (typeof window === 'undefined') return null;
 
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
@@ -60,8 +60,8 @@ export const useThemeStore = create<ThemeState>((set, get) => {
             },
         },
 
-        activeTheme: persisted?.activeTheme ?? "default",
-        mode: persisted?.mode ?? "dark",
+        activeTheme: persisted?.activeTheme ?? 'default',
+        mode: persisted?.mode ?? 'dark',
 
         setTheme: (name) =>
             set((state) => {
@@ -73,7 +73,7 @@ export const useThemeStore = create<ThemeState>((set, get) => {
 
         toggleMode: () =>
             set((state) => {
-                const next = state.mode === "dark" ? "light" : "dark";
+                const next = state.mode === 'dark' ? 'light' : 'dark';
 
                 save({ activeTheme: state.activeTheme, mode: next });
                 return { mode: next };

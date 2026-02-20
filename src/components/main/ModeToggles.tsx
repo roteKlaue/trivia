@@ -2,14 +2,16 @@
 import BrowseGalleryRoundedIcon from '@mui/icons-material/BrowseGalleryRounded';
 import Timer10SelectRoundedIcon from '@mui/icons-material/Timer10SelectRounded';
 import Timer3SelectRoundedIcon from '@mui/icons-material/Timer3SelectRounded';
-import { StyledToggleButtonGroup } from "./StyledToggleButtonGroup";
+import { StyledToggleButtonGroup } from './StyledToggleButtonGroup';
 import WhatshotIcon from '@mui/icons-material/WhatshotRounded';
 import FavoriteIcon from '@mui/icons-material/FavoriteRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, ToggleButton, Tooltip } from "@mui/material";
-import { useThemeStore } from "../../stores/ThemeStore";
+import { useThemeStore } from '../../stores/ThemeStore';
+import ToggleButton from '@mui/material/ToggleButton';
 import { FireComponent } from '../FireComponent';
-import { useEffect, type FC } from "react";
+import Tooltip from '@mui/material/Tooltip';
+import { useEffect, type FC } from 'react';
+import Box from '@mui/material/Box';
 import HardcoreIcon from './Skull';
 
 const ModeToggles: FC<{ toggles: string[], setToggles: (a: string[]) => void }> = ({ toggles, setToggles }) => {
@@ -20,12 +22,12 @@ const ModeToggles: FC<{ toggles: string[], setToggles: (a: string[]) => void }> 
         newFormats: string[],
     ) => {
         if (newFormats.includes('hard')) {
-            setTheme("fire");
+            setTheme('fire');
             setToggles(['hard']);
             return;
         }
 
-        setTheme("default");
+        setTheme('default');
         if (newFormats.includes('speeder') && !toggles.includes('speeder')) {
             setToggles(newFormats.filter(v => v === 'speeder' || v === 'showAnswers'));
             return;
@@ -61,7 +63,7 @@ const ModeToggles: FC<{ toggles: string[], setToggles: (a: string[]) => void }> 
     }, []);
 
     const hardcoreMode = toggles.includes('hard');
-    const timedMode = toggles.includes("timed");
+    const timedMode = toggles.includes('timed');
 
     return (<Box width='100%' display='flex' justifyContent='center'>
         <StyledToggleButtonGroup
@@ -138,7 +140,7 @@ const ModeToggles: FC<{ toggles: string[], setToggles: (a: string[]) => void }> 
                     <FireComponent
                         sx={{ transform: `scale(2)`, width: 24 }}
                         scale={4} position={{ x: 0, y: 0 }} />
-                    {activeTheme !== "fire" && <HardcoreIcon color='error' sx={{ zIndex: 2 }} />}
+                    {activeTheme !== 'fire' && <HardcoreIcon color='error' sx={{ zIndex: 2 }} />}
                 </ToggleButton>
             </Tooltip>
         </StyledToggleButtonGroup>

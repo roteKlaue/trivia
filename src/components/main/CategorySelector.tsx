@@ -1,6 +1,11 @@
-import { FormControl, InputLabel, MenuItem, Select, Tooltip } from "@mui/material";
-import { categories, type Category } from "../../types/Category";
-import type { FC } from "react";
+import { categories, type Category } from '../../types/Category';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import { capitalize } from '@mui/material/utils';
+import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
+import Select from '@mui/material/Select';
+import type { FC } from 'react';
 
 type Props = {
     setCategory(cat: Category): void;
@@ -8,19 +13,16 @@ type Props = {
     hardcoreMode: boolean;
 };
 
-
 const CategorySelector: FC<Props> = ({ setCategory, category, hardcoreMode }) => (<Tooltip title='Choose the topic of the questions' arrow>
     <FormControl fullWidth>
         <InputLabel>Category</InputLabel>
-        <Select
+        <Select label='Category'
             value={hardcoreMode ? 'all' : category}
             disabled={hardcoreMode}
-            label='Category'
-            onChange={(e) => setCategory(e.target.value as Category)}
-        >
+            onChange={(e) => setCategory(e.target.value as Category)}>
             {categories.map((cat) => (
                 <MenuItem key={cat} value={cat}>
-                    {cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                    {capitalize(cat.replace(/_/g, ' '))}
                 </MenuItem>
             ))}
         </Select>

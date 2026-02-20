@@ -1,16 +1,19 @@
-import successSfx from "../../assets/soundeffects/universfield-new-notification-07-210334.mp3";
-import errorSfx from "../../assets/soundeffects/universfield-error-08-206492.mp3";
-import { useSoundPlaybackStore } from "../../stores/SoundPlaybackStore";
-import { Box, Button, Paper, Typography } from "@mui/material";
-import { useGameStateStore } from "../../stores/GameStateStore";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import successSfx from '../../assets/soundeffects/universfield-new-notification-07-210334.mp3';
+import errorSfx from '../../assets/soundeffects/universfield-error-08-206492.mp3';
+import { useSoundPlaybackStore } from '../../stores/SoundPlaybackStore';
+import { useGameStateStore } from '../../stores/GameStateStore';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import type { Question } from '../../types/Question';
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import AnswerButton from "./AnswerButton";
-import LivesDisplay from "./LivesDisplay";
-import TimerDisplay from "./TimerDisplay";
-import ResultsBar from "./ResultsBar";
+import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import AnswerButton from './AnswerButton';
+import LivesDisplay from './LivesDisplay';
+import TimerDisplay from './TimerDisplay';
+import Paper from '@mui/material/Paper';
+import ResultsBar from './ResultsBar';
+import Box from '@mui/material/Box';
 
 const Game = () => {
     const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, config, findQuestionIndex } = useGameStateStore();
@@ -27,7 +30,7 @@ const Game = () => {
 
     useEffect(() => {
         if (!currentQuestion) {
-            navigate("/trivia/finish");
+            navigate('/trivia/finish');
             return;
         }
         setQuestion(currentQuestion);
@@ -54,7 +57,7 @@ const Game = () => {
         const onKeyDown = (e: KeyboardEvent) => {
             const selected = questions[round].state.selected;
 
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
                 handleSubmit();
                 return;
             }
@@ -80,26 +83,26 @@ const Game = () => {
             handleSelectAnswer((selected + delta) % 4);
         };
 
-        window.addEventListener("keydown", onKeyDown);
-        return () => window.removeEventListener("keydown", onKeyDown);
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
     }, [round, questions, handleSubmit, handleSelectAnswer]);
 
     const currentIndex = findQuestionIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
 
-    const submitLabel = currentResult?.answered ? "Next" : "Submit";
+    const submitLabel = currentResult?.answered ? 'Next' : 'Submit';
 
     return (<Box sx={{
-        width: "100%",
+        width: '100%',
         flexGrow: 1,
-        display: "flex",
-        flexDirection: "column"
+        display: 'flex',
+        flexDirection: 'column'
     }}>
         <Box sx={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
-            alignItems: "center",
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            alignItems: 'center',
             rowGap: 1,
             columnGap: 2
         }}>
@@ -110,42 +113,42 @@ const Game = () => {
 
         <Box sx={{
             flexGrow: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         }}>
-            <Paper sx={{ borderRadius: "10px" }}>
+            <Paper sx={{ borderRadius: '10px' }}>
                 <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
                     minHeight: 420,
                     maxWidth: 1100,
                     borderRadius: 3,
                     p: { xs: 2, sm: 3, md: 4 },
-                    aspectRatio: { md: "16 / 9" },
+                    aspectRatio: { md: '16 / 9' },
                 }}>
                     <Typography
                         sx={{
                             fontSize: {
-                                xs: "1.6rem",
-                                sm: "1.8rem",
-                                md: "2rem"
+                                xs: '1.6rem',
+                                sm: '1.8rem',
+                                md: '2rem'
                             }
                         }}
-                        textAlign="center"
+                        textAlign='center'
                     >
                         {question?.question}</Typography>
                     <Box
                         sx={{
                             flexGrow: 1,
-                            display: "grid",
+                            display: 'grid',
                             gridTemplateColumns: {
-                                xs: "1fr",
-                                sm: "1fr 1fr"
+                                xs: '1fr',
+                                sm: '1fr 1fr'
                             },
                             gap: 2,
-                            alignItems: "stretch"
+                            alignItems: 'stretch'
                         }}
                     >
                         {questions[currentIndex].state.cachedAnswers.map((ans, index) => (
@@ -159,16 +162,16 @@ const Game = () => {
                         ))}
                     </Box>
                     <Box sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
                         marginTop: 3,
                         marginBottom: 3
                     }}>
                         <Button
                             fullWidth
                             sx={{ maxWidth: 300 }}
-                            variant="contained"
+                            variant='contained'
                             onClick={handleSubmit}
                             disabled={(questions[currentIndex].state.selected === -1) && !questions[currentIndex].state.answered}
                         >{submitLabel}</Button>
