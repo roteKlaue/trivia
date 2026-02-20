@@ -37,7 +37,7 @@ const Navbar = () => {
                                 left: 19,
                                 width: 36,
                                 height: 36,
-                                opacity: 0.6,
+                                opacity: 0.9,
                             }}
                             scale={2.5}
                         />

@@ -17,7 +17,7 @@ type Props = {
 };
 
 const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
-    const { questions, round } = useGameStateStore();
+    const { questions, round, config } = useGameStateStore();
 
     const findIndex = (question: Question | null) => {
         const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
@@ -32,13 +32,14 @@ const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
         setQuestion(questions[index].question);
     };
 
-    if (isMobile) {
+    if (isMobile || config.rounds > 30) {
         return (
             <Box px={1}>
                 <Select
-                    fullWidth
+                    fullWidth={isMobile}
                     value={findIndex(question)}
                     onChange={(e) => handleChange(Number(e.target.value))}
+                    sx={{ marginLeft: isMobile ? 0 : 10 }}
                 >
                     {questions.map((q, index) => {
                         const isCurrent = !(index > round);
@@ -51,11 +52,9 @@ const ResultsBar: FC<Props> = ({ setQuestion, question }) => {
                                         ? "✓"
                                         : "✗";
 
-                        return (
-                            <MenuItem key={index} value={index} disabled={index > round}>
-                                {symbol} Q{`${index + 1}`.padStart(2, "0")}
-                            </MenuItem>
-                        );
+                        return (<MenuItem key={index} value={index} disabled={index > round}>
+                            {symbol} Q{`${index + 1}`.padStart(2, "0")}
+                        </MenuItem>);
                     })}
                 </Select>
             </Box>
