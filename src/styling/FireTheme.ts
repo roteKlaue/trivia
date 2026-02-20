@@ -39,38 +39,49 @@ export const FireDarkTheme = createTheme({
     },
 
     components: {
-        // MuiButton: {
-        //     styleOverrides: {
-        //         root: {
-        //             borderRadius: 14,
-        //             fontWeight: 600,
-        //             textTransform: "none",
-        //         },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 14,
+                    fontWeight: 600,
+                    textTransform: "none",
+                },
 
-        //         contained: ({ theme }) => ({
-        //             background: `linear-gradient(135deg,${theme.palette.primary.light},${theme.palette.primary.main})`,
-        //             boxShadow: `0 0 12px ${FIRE.effects.glowMedium}`,
-        //             "&:hover": {
-        //                 boxShadow: `0 0 20px ${FIRE.effects.glowStrong}`,
-        //             },
-        //         }),
+                contained: ({ theme, ownerState }) => {
+                    const key =
+                        ownerState.color &&
+                            ownerState.color !== "inherit" &&
+                            theme.palette[ownerState.color]
+                            ? ownerState.color
+                            : "primary";
 
-        //         outlined: ({ theme }) => ({
-        //             borderWidth: 2,
-        //             borderColor: theme.palette.primary.main,
-        //             "&:hover": {
-        //                 borderWidth: 2,
-        //                 backgroundColor: `${theme.palette.primary.main}22`,
-        //             },
-        //         }),
+                    const p = theme.palette[key];
 
-        //         text: ({ theme }) => ({
-        //             "&:hover": {
-        //                 backgroundColor: `${theme.palette.primary.main}22`,
-        //             },
-        //         }),
-        //     },
-        // },
+                    return {
+                        background: `linear-gradient(135deg, ${p.light}, ${p.main})`,
+                        boxShadow: `0 0 12px ${p.main}66`,
+                        "&:hover": {
+                            boxShadow: `0 0 20px ${p.main}aa`,
+                        },
+                    };
+                },
+
+                outlined: ({ theme }) => ({
+                    borderWidth: 2,
+                    borderColor: theme.palette.primary.main,
+                    "&:hover": {
+                        borderWidth: 2,
+                        backgroundColor: `${theme.palette.primary.main}22`,
+                    },
+                }),
+
+                text: ({ theme }) => ({
+                    "&:hover": {
+                        backgroundColor: `${theme.palette.primary.main}22`,
+                    },
+                }),
+            },
+        },
 
         MuiPaper: {
             styleOverrides: {
@@ -124,13 +135,27 @@ export const FireLightTheme = createTheme({
                     textTransform: "none",
                 },
 
-                contained: ({ theme }) => ({
-                    background: `linear-gradient(135deg,${theme.palette.primary.light},${theme.palette.primary.main})`,
-                    boxShadow: `0 0 12px ${FIRE.effects.glowMedium}`,
-                    "&:hover": {
-                        boxShadow: `0 0 20px ${FIRE.effects.glowStrong}`,
-                    },
-                }),
+                contained: ({ theme, ownerState }) => {
+                    const color = ownerState.color;
+
+                    if (!color || color === "inherit" || !theme.palette[color]) {
+                        const p = theme.palette.primary;
+
+                        return {
+                            background: `linear-gradient(135deg, ${p.light}, ${p.main})`,
+                        };
+                    }
+
+                    const p = theme.palette[color];
+
+                    return {
+                        background: `linear-gradient(135deg, ${p.light}, ${p.main})`,
+                        boxShadow: `0 0 12px ${FIRE.effects.glowMedium}`,
+                        "&:hover": {
+                            boxShadow: `0 0 20px ${FIRE.effects.glowStrong}`,
+                        },
+                    };
+                },
 
                 outlined: ({ theme }) => ({
                     borderWidth: 2,

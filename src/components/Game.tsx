@@ -12,21 +12,16 @@ import ResultsBar from "./ResultsBar";
 import LivesDisplay from "./LivesDisplay";
 
 const Game = () => {
-    const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, timerRemaining, config } = useGameStateStore();
+    const { currentQuestion, questions, nextQuestion, round, markAnswer, guess, timerRemaining, config, findQuestionIndex } = useGameStateStore();
     const [question, setQuestion] = useState<Question | null>(currentQuestion);
     const { playSfx } = useSoundPlaybackStore();
     const navigate = useNavigate();
 
     useDocumentTitle(`Trivia - ${questions.length} Questions`);
 
-    const findIndex = (question: Question | null) => {
-        const index = question ? questions.findIndex(q => q.question.id === question.id) : -1;
-        return index;
-    }
-
     const handleSelectAnswer = (index: number) => {
-        if (questions[findIndex(question)].state.answered) return;
-        markAnswer(findIndex(question), index);
+        if (questions[findQuestionIndex(question)].state.answered) return;
+        markAnswer(findQuestionIndex(question), index);
     };
 
     useEffect(() => {
@@ -38,7 +33,7 @@ const Game = () => {
     }, [currentQuestion]);
 
     const handleSubmit = () => {
-        if (findIndex(question) !== round) {
+        if (findQuestionIndex(question) !== round) {
             setQuestion(currentQuestion);
             return;
         }
@@ -88,7 +83,7 @@ const Game = () => {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [round, questions, handleSubmit, handleSelectAnswer]);
 
-    const currentIndex = findIndex(question);
+    const currentIndex = findQuestionIndex(question);
     const currentResult = currentIndex !== -1 ? questions[currentIndex].state : null;
 
     const submitLabel = currentResult?.answered ? "Next" : "Submit";
@@ -169,7 +164,7 @@ const Game = () => {
                             alignItems: "stretch"
                         }}
                     >
-                        {questions[findIndex(question)].state.cachedAnswers.map((ans, index) => (
+                        {questions[currentIndex].state.cachedAnswers.map((ans, index) => (
                             <AnswerButton
                                 key={index}
                                 text={ans}
@@ -191,7 +186,7 @@ const Game = () => {
                             sx={{ maxWidth: 300 }}
                             variant="contained"
                             onClick={handleSubmit}
-                            disabled={(questions[findIndex(question)].state.selected === -1) && !questions[findIndex(question)].state.answered}
+                            disabled={(questions[currentIndex].state.selected === -1) && !questions[currentIndex].state.answered}
                         >{submitLabel}</Button>
                     </Box>
                 </Box>

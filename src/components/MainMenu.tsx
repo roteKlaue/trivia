@@ -76,18 +76,23 @@ const MainMenu = () => {
 
     return (<>
         <Box display='flex' justifyContent='center'>
-            <Paper elevation={4} sx={{ p: 3 }}>
-                <Box display='flex' flexDirection='column' gap={3} width={400}>
+            <Paper elevation={4} sx={{
+                p: 3,
+                width: "100%",
+                maxWidth: 450
+            }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 3,
+                    width: '100%',
+                }}>
                     <Typography textAlign='center' variant='h4'>Trivia</Typography>
-
                     <CategorySelector setCategory={setCategory} category={category} hardcoreMode={hardcoreMode} />
                     <DifficultySelector difficulty={difficulty} hardcoreMode={hardcoreMode} setDifficulty={setDifficulty} />
                     <AmountSlider hardcore={hardcoreMode} amount={amount} setAmount={setAmount} />
                     <ModeToggles toggles={toggles} setToggles={setToggles} />
-
-                    <Button variant='contained' onClick={handleSubmit}>
-                        Start Quiz
-                    </Button>
+                    <Button variant='contained' onClick={handleSubmit}>Start Quiz</Button>
                 </Box>
             </Paper>
         </Box>
