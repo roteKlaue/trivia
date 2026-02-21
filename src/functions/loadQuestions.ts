@@ -1,10 +1,10 @@
-import type { Difficulty } from "../types/Difficulty";
-import type { Category } from "../types/Category";
-import type { Question } from "../types/Question";
-import axios from "axios";
+import type { Difficulty } from '../types/Difficulty';
+import type { Category } from '../types/Category';
+import type { Question } from '../types/Question';
+import axios from 'axios';
 
 export const fetchQuestions = async (
-    difficulty: Difficulty | "mix",
+    difficulty: Difficulty | 'mix',
     category: Category,
     limit: number
 ): Promise<Question[]> => {
@@ -14,12 +14,12 @@ export const fetchQuestions = async (
         limit: String(limit),
     });
 
-    if (difficulty !== "mix") {
-        params.append("difficulty", difficulty);
+    if (difficulty !== 'mix') {
+        params.append('difficulty', difficulty);
     }
 
-    if (category !== "all") {
-        params.append("categories", category);
+    if (category !== 'all') {
+        params.append('categories', category);
     }
 
     try {
@@ -29,7 +29,7 @@ export const fetchQuestions = async (
 
         return data;
     } catch (err) {
-        console.error("Failed to fetch trivia questions:", err);
+        console.error('Failed to fetch trivia questions:', err);
         throw err;
     }
 };

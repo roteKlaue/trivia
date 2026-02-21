@@ -1,11 +1,12 @@
-import { Box, Typography } from "@mui/material";
-import { type FC } from "react";
-import FooterLink from "./FooterLink";
+import Typography from '@mui/material/Typography';
+import FooterLink from './FooterLink';
+import Box from '@mui/material/Box';
+import { type FC } from 'react';
 
 const Footer: FC = () => {
     return (
         <Box
-            component="footer"
+            component='footer'
             sx={{
                 display: 'flex',
                 flexDirection: { xs: 'column', sm: 'row' },
@@ -17,27 +18,27 @@ const Footer: FC = () => {
             }}
         >
             <Box
-                display="flex"
+                display='flex'
                 gap={2}
-                flexWrap="wrap"
+                flexWrap='wrap'
                 justifyContent={{ xs: 'center', sm: 'flex-start' }}
             ></Box>
 
             <Typography
-                variant="body2"
-                textAlign="center"
+                variant='body2'
+                textAlign='center'
                 sx={{ flexShrink: 0 }}
             >
                 © roteKlaue 2022-{new Date().getFullYear()}. All rights reserved.
             </Typography>
 
             <Box
-                display="flex"
+                display='flex'
                 gap={2}
                 justifyContent={{ xs: 'center', sm: 'flex-end' }}
-                flexWrap="wrap"
+                flexWrap='wrap'
             >
-                <FooterLink text="Credits" to="/trivia/credits" />
+                <FooterLink text='Credits' to='/trivia/credits' />
             </Box>
         </Box>
     );

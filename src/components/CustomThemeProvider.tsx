@@ -1,13 +1,12 @@
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { useThemeStore } from "../stores/ThemeStore";
-import defaultTheme from "../styling/DarkTheme.ts";
-import lightTheme from "../styling/LightTheme.ts";
+import { ThemeProvider } from '@mui/material/styles';
+import { useThemeStore } from '../stores/ThemeStore';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const isDarkMode = useThemeStore((state) => state.isDarkMode);
+    const theme = useThemeStore((state) => state.getCurrentTheme());
 
     return (
-        <ThemeProvider theme={isDarkMode ? defaultTheme : lightTheme}>
+        <ThemeProvider theme={theme}>
             <CssBaseline />
             {children}
         </ThemeProvider>

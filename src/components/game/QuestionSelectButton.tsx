@@ -1,5 +1,5 @@
 import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
-import { ToggleButton } from "@mui/material";
+import ToggleButton from '@mui/material/ToggleButton';
 import type { FC } from 'react';
 
 type Props = {
@@ -12,8 +12,8 @@ const QuestionSelectButton: FC<Props> = ({ index, round, correct }) => {
     const color = index > round
         ? void 0
         : correct === true
-            ? "success"
-            : index === round ? "primary" : "error";
+            ? 'success'
+            : index === round ? 'primary' : 'error';
 
     return (<ToggleButton
         key={index}

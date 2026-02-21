@@ -1,13 +1,18 @@
 import PsychologyAltRoundedIcon from '@mui/icons-material/PsychologyAltRounded';
-import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import HelpCenterRoundedIcon from '@mui/icons-material/HelpCenterRounded';
+import { FireBackground } from '../FireComponent.tsx';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import SoundControll from './SoundControll.tsx';
 import { useNavigate } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer.tsx';
+import Toolbar from '@mui/material/Toolbar';
 import ModeSwitch from './ModeSwitch.tsx';
-import { useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import { useState, type FC } from 'react';
+import Box from '@mui/material/Box';
 
-const Navbar = () => {
+const Navbar: FC<{ setOpen: (o: boolean) => void }> = ({ setOpen }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigator = useNavigate();
 
@@ -27,15 +32,26 @@ const Navbar = () => {
                         sx={{ cursor: 'pointer' }}
                         marginLeft={1}
                         display='flex'
+                        position='relative'
                         justifyContent='center'
                         alignItems='center'>
-                        <PsychologyAltRoundedIcon />
+                        <FireBackground
+                            sx={{
+                                top: 12,
+                                left: 19,
+                                width: 36,
+                                height: 36,
+                                opacity: 0.9,
+                            }}
+                            scale={2.5}
+                        />
+                        <PsychologyAltRoundedIcon sx={{ zIndex:3 }} />
                         <Typography variant='h6' paddingLeft={1}>Trivia</Typography>
                     </Box>
                     <Box flexGrow={1} height='100%' />
                     <SoundControll />
                     <ModeSwitch />
-                    <IconButton>
+                    <IconButton onClick={() => setOpen(true)}>
                         <HelpCenterRoundedIcon />
                     </IconButton>
                 </Toolbar>
