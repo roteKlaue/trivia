@@ -93,7 +93,7 @@ export const FireCanvas: React.FC = () => {
             ref={canvasRef}
             width={16}
             height={16}
-            style={{ imageRendering: 'pixelated', transform: 'rotate(180deg)' }}
+            style={{ imageRendering: 'pixelated' }}
         />
     );
 };
