@@ -9,10 +9,10 @@ import NavbarDrawer from './NavbarDrawer.tsx';
 import Toolbar from '@mui/material/Toolbar';
 import ModeSwitch from './ModeSwitch.tsx';
 import AppBar from '@mui/material/AppBar';
+import { useState, type FC } from 'react';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
 
-const Navbar = () => {
+const Navbar: FC<{ setOpen: (o: boolean) => void }> = ({ setOpen }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigator = useNavigate();
 
@@ -51,7 +51,7 @@ const Navbar = () => {
                     <Box flexGrow={1} height='100%' />
                     <SoundControll />
                     <ModeSwitch />
-                    <IconButton>
+                    <IconButton onClick={() => setOpen(true)}>
                         <HelpCenterRoundedIcon />
                     </IconButton>
                 </Toolbar>
